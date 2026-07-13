@@ -1,0 +1,15 @@
+家庭菜单管理中心 Final V1 更新方法
+
+你只需要做一次：
+1. 打开 https://github.com/haina07/family-menu
+2. 点击 Add file → Upload files
+3. 上传本文件夹里的 index.html（同名文件会替换旧版）
+4. 页面底部点击 Commit changes
+5. 等待约1-2分钟，打开 https://haina07.github.io/family-menu/
+6. iPhone 如仍显示旧版：Safari 刷新一次，或在网址后临时加 ?v=final
+
+data.js 可以保留，Final V1 已不再使用它。
+
+日常使用：
+选菜 → 保存今日菜单 → 分享菜单给 ChatGPT。
+分享按钮会生成带选菜结果的网址，选择 ChatGPT 分享，或粘贴到当前聊天。

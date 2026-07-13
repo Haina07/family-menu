@@ -1,120 +1,716 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
 <title>家庭菜单管理中心</title>
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--line:#e5e7eb;--blue:#2563eb;--text:#1f2937}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--text)}
-header{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--line);padding:14px}.wrap{max-width:1280px;margin:auto;padding:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
-h1{font-size:22px;margin:0 0 5px}h2{font-size:19px}h3{font-size:16px;margin:0 0 8px}
-.controls,.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.group{border:1px solid var(--line);border-radius:12px;padding:10px}.dish{display:flex;gap:8px;padding:7px 0;border-bottom:1px dashed #eee}.dish input{width:22px;height:22px}.dish label{flex:1}
-.tag{font-size:11px;background:#fef3c7;padding:2px 6px;border-radius:99px}
-input,select,textarea,button{font:inherit}input[type=date],input[type=text],select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:9px}
-textarea{min-height:180px}button{padding:10px 14px;border:0;border-radius:9px;background:var(--blue);color:white;font-weight:700}.gray{background:#e5e7eb;color:#111}.red{background:#fee2e2;color:#991b1b}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.stickybar{position:sticky;bottom:0;background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:10px;z-index:8}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid var(--line);padding:7px;vertical-align:top}
-@media(max-width:900px){.groups,.controls,.grid2{grid-template-columns:1fr}}
+:root{--bg:#f5f6f8;--card:#fff;--line:#e5e7eb;--text:#1f2937;--muted:#6b7280;--blue:#2563eb;--blue2:#eff6ff;--red:#b91c1c;--green:#047857;}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.wrap{max-width:1320px;margin:auto;padding:14px} h1{font-size:22px;margin:0 0 4px} h2{font-size:19px;margin:18px 0 10px} h3{font-size:16px}
+.sub{color:var(--muted);font-size:13px;line-height:1.5} .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 9px rgba(0,0,0,.025)}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:14px} .sidebar{position:sticky;top:84px;align-self:start;max-height:calc(100vh - 100px);overflow:auto}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} label.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted)}
+input[type=date],input[type=text],select,textarea{width:100%;padding:10px 11px;border:1px solid #cfd4dc;border-radius:10px;background:white;font:inherit;color:var(--text)}
+textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;padding:10px 13px;font:inherit;font-weight:700;cursor:pointer}
+.primary{background:var(--blue);color:white} .secondary{background:#e5e7eb;color:#111827} .danger{background:#fee2e2;color:#991b1b} .success{background:#dcfce7;color:#065f46}
+.actions{display:flex;gap:8px;flex-wrap:wrap} .actions button{flex:1;min-width:110px}
+.selected-box{background:var(--blue2);border:1px solid #bfdbfe;border-radius:12px;padding:11px} #selectedList{margin:8px 0 0;padding-left:22px;line-height:1.7}
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px} .status{border:1px solid var(--line);border-radius:10px;padding:9px;background:#fafafa;font-size:12px}
+.status b{display:block;font-size:17px;margin-top:2px} .warning{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:10px;padding:9px;margin-top:10px;font-size:13px;display:none}
+.filterbar{display:flex;gap:8px;overflow:auto;padding-bottom:6px} .filterbtn{white-space:nowrap;background:#eef2f7;color:#374151;padding:8px 11px} .filterbtn.active{background:var(--blue);color:#fff}
+.group{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:#fff;overflow:hidden} summary{padding:11px 12px;font-weight:700;cursor:pointer;background:#fafafa}
+.count{font-size:11px;color:var(--muted);font-weight:500} .dish-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px;padding:7px 12px 11px}
+.dish-card{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px dashed #eceff3;cursor:pointer;min-width:0} .dish-card input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.dish-name{font-size:14px;line-height:1.45;min-width:0} .dish-card small{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-left:30px}
+.tag{display:inline-block;font-size:10px;line-height:1.4;padding:1px 5px;border-radius:999px;margin-left:3px;vertical-align:1px} .kid{background:#fef3c7;color:#92400e} .dad{background:#fee2e2;color:#991b1b} .mom{background:#dbeafe;color:#1d4ed8} .spicy{background:#ffe4e6;color:#be123c}
+.favorite{background:#fffbea} .deleted{display:none!important} .custom-area{border:1px dashed #93c5fd;border-radius:12px;padding:10px;background:#f8fbff;margin-bottom:12px}
+.week-table{width:100%;border-collapse:collapse;font-size:12px} .week-table th,.week-table td{border:1px solid var(--line);padding:7px;vertical-align:top} .week-table th{background:#f9fafb}
+.output-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px} .sticky-actions{position:sticky;bottom:0;z-index:25;background:rgba(245,246,248,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom))}
+.manage-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px} .feedback-row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center}
+.share-note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.sidebar{position:static;max-height:none}.dish-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.wrap{padding:10px}.controls,.output-grid,.manage-grid{grid-template-columns:1fr}.dish-grid{grid-template-columns:1fr}.feedback-row{grid-template-columns:1fr 1fr}.feedback-row select{grid-column:1/-1}}
 </style>
-<script src="data.js"></script>
 </head>
 <body>
-<header><div class="wrap"><h1>家庭菜单管理中心</h1><div>点菜、保存本周菜单、生成采购清单和阿姨微信</div></div></header>
-<div class="wrap">
-<div class="card">
-<h2>日期与设置</h2>
-<div class="controls">
-<label>日期<input type="date" id="date"></label>
-<label>是否带饭<select id="lunch"><option>不带饭</option><option>带一份</option><option>带两份</option></select></label>
-<label>是否留菜<select id="left"><option>不需要留菜</option><option>留一份到第二天</option><option>多做一些</option></select></label>
-<label>口味重点<select id="focus"><option>均衡安排</option><option>孩子</option><option>爸爸</option><option>妈妈</option></select></label>
-</div>
-<p><input id="search" type="text" placeholder="搜索菜名，例如：牛肉、鸡蛋、汤"></p>
-<label><input type="checkbox" class="clean" value="擦灰"> 擦灰</label>
-<label><input type="checkbox" class="clean" value="擦沙发"> 擦沙发</label>
-<label><input type="checkbox" class="clean" value="厨房打扫"> 厨房打扫</label>
+<header><div class="wrap"><h1>家庭菜单管理中心</h1><div class="sub">Final V1｜完整菜单、直接点菜、本周去重、采购清单、阿姨微信和分享链接</div></div></header>
+
+<div class="wrap layout">
+<aside class="sidebar">
+  <div class="card">
+    <h2 style="margin-top:0">今日设置</h2>
+    <div class="controls">
+      <label class="field">日期<input type="date" id="menuDate"></label>
+      <label class="field">是否带饭<select id="lunchBox"><option>不带饭</option><option>带一份</option><option>带两份</option></select></label>
+      <label class="field">是否留菜<select id="leftover"><option>不需要留菜</option><option>留一份到第二天</option><option>多做一些</option></select></label>
+      <label class="field">口味重点<select id="focus"><option>均衡安排</option><option>孩子</option><option>爸爸</option><option>妈妈</option></select></label>
+    </div>
+    <label class="field" style="margin-top:10px">给阿姨的补充备注<textarea id="extraNote" style="min-height:75px" placeholder="例如：五点半做好；不要太辣；留一份明天吃"></textarea></label>
+    <div style="margin-top:10px">
+      <label><input type="checkbox" class="cleaning" value="擦灰"> 擦灰</label><br>
+      <label><input type="checkbox" class="cleaning" value="擦沙发"> 擦沙发</label><br>
+      <label><input type="checkbox" class="cleaning" value="厨房打扫"> 厨房打扫</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">已选菜单</h2>
+    <div class="selected-box"><ol id="selectedList"><li>尚未选择</li></ol></div>
+    <div id="duplicateWarning" class="warning"></div>
+    <div class="status-grid">
+      <div class="status">肉末豆腐<b id="tofuStatus">未安排</b></div>
+      <div class="status">孩子偏好<b id="kidStatus">0</b></div>
+      <div class="status">爸爸辣菜<b id="dadStatus">0</b></div>
+      <div class="status">妈妈牛肉/鱼/汤<b id="momStatus">0</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">本周菜单</h2>
+    <div id="weekHistory"></div>
+  </div>
+</aside>
+
+<main>
+  <div class="card">
+    <h2 style="margin-top:0">点菜</h2>
+    <input type="text" id="searchBox" placeholder="搜索：牛肉、鸡蛋、汤、排骨……">
+    <div class="filterbar" id="filterBar" style="margin-top:10px">
+      <button class="filterbtn active" data-filter="全部">全部</button>
+      <button class="filterbtn" data-filter="荤菜">荤菜</button>
+      <button class="filterbtn" data-filter="素菜">素菜</button>
+      <button class="filterbtn" data-filter="汤或粥">汤或粥</button>
+      <button class="filterbtn" data-filter="主食">主食</button>
+      <button class="filterbtn" data-filter="水果">水果</button>
+      <button class="filterbtn" data-filter="空气炸锅及快捷食品">快捷食品</button>
+    </div>
+  </div>
+
+  <div id="customDishes" class="custom-area" style="display:none"></div>
+
+  <div id="staticMenu">
+    <section class="menu-section" data-category="荤菜"><h2>荤菜</h2>
+<details class="group" open><summary>鸡肉类 <span class="count">13</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="红烧鸡翅" data-dish="红烧鸡翅"><input type="checkbox" class="dish-check" value="红烧鸡翅" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients="鸡翅|葱|姜"><span class="dish-name">红烧鸡翅 </span></label>
+<label class="dish-card" data-name="红烧鸡爪" data-dish="红烧鸡爪"><input type="checkbox" class="dish-check" value="红烧鸡爪" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients="鸡爪|葱|姜"><span class="dish-name">红烧鸡爪 </span></label>
+<label class="dish-card" data-name="炸鸡柳" data-dish="炸鸡柳"><input type="checkbox" class="dish-check" value="炸鸡柳" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients="鸡胸肉|鸡蛋|面包糠"><span class="dish-name">炸鸡柳 </span></label>
+<label class="dish-card" data-name="临沂炒鸡（村驴）" data-dish="临沂炒鸡（村驴）"><input type="checkbox" class="dish-check" value="临沂炒鸡（村驴）" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">临沂炒鸡（村驴） <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="可乐鸡翅" data-dish="可乐鸡翅"><input type="checkbox" class="dish-check" value="可乐鸡翅" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients="鸡翅"><span class="dish-name">可乐鸡翅 </span></label>
+<label class="dish-card" data-name="黄焖鸡" data-dish="黄焖鸡"><input type="checkbox" class="dish-check" value="黄焖鸡" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">黄焖鸡 </span></label>
+<label class="dish-card" data-name="宫保鸡丁" data-dish="宫保鸡丁"><input type="checkbox" class="dish-check" value="宫保鸡丁" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">宫保鸡丁 <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="香菇滑鸡" data-dish="香菇滑鸡"><input type="checkbox" class="dish-check" value="香菇滑鸡" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">香菇滑鸡 </span></label>
+<label class="dish-card" data-name="咖喱鸡" data-dish="咖喱鸡"><input type="checkbox" class="dish-check" value="咖喱鸡" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">咖喱鸡 </span></label>
+<label class="dish-card" data-name="鸡腿炖土豆" data-dish="鸡腿炖土豆"><input type="checkbox" class="dish-check" value="鸡腿炖土豆" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients="土豆"><span class="dish-name">鸡腿炖土豆 </span></label>
+<label class="dish-card" data-name="鸡腿炖蘑菇" data-dish="鸡腿炖蘑菇"><input type="checkbox" class="dish-check" value="鸡腿炖蘑菇" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">鸡腿炖蘑菇 </span></label>
+<label class="dish-card" data-name="白切鸡" data-dish="白切鸡"><input type="checkbox" class="dish-check" value="白切鸡" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">白切鸡 </span></label>
+<label class="dish-card" data-name="盐焗鸡" data-dish="盐焗鸡"><input type="checkbox" class="dish-check" value="盐焗鸡" data-category="荤菜" data-group="鸡肉类" data-note="" data-ingredients=""><span class="dish-name">盐焗鸡 </span></label>
+</div></details>
+<details class="group" open><summary>猪肉｜排骨类 <span class="count">8</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="糖醋排骨" data-dish="糖醋排骨"><input type="checkbox" class="dish-check" value="糖醋排骨" data-category="荤菜" data-group="猪肉｜排骨类" data-note="" data-ingredients="排骨"><span class="dish-name">糖醋排骨 </span></label>
+<label class="dish-card" data-name="红烧排骨" data-dish="红烧排骨"><input type="checkbox" class="dish-check" value="红烧排骨" data-category="荤菜" data-group="猪肉｜排骨类" data-note="" data-ingredients="排骨"><span class="dish-name">红烧排骨 </span></label>
+<label class="dish-card" data-name="菠萝排骨" data-dish="菠萝排骨"><input type="checkbox" class="dish-check" value="菠萝排骨" data-category="荤菜" data-group="猪肉｜排骨类" data-note="" data-ingredients="排骨|菠萝"><span class="dish-name">菠萝排骨 </span></label>
+<label class="dish-card" data-name="话梅排骨" data-dish="话梅排骨"><input type="checkbox" class="dish-check" value="话梅排骨" data-category="荤菜" data-group="猪肉｜排骨类" data-note="放1/3可乐" data-ingredients="排骨|话梅|可乐"><span class="dish-name">话梅排骨 </span><small>放1/3可乐</small></label>
+<label class="dish-card" data-name="豉汁排骨（村驴）" data-dish="豉汁排骨（村驴）"><input type="checkbox" class="dish-check" value="豉汁排骨（村驴）" data-category="荤菜" data-group="猪肉｜排骨类" data-note="" data-ingredients="排骨|豆豉"><span class="dish-name">豉汁排骨（村驴） </span></label>
+<label class="dish-card" data-name="豆角土豆炖排骨" data-dish="豆角土豆炖排骨"><input type="checkbox" class="dish-check" value="豆角土豆炖排骨" data-category="荤菜" data-group="猪肉｜排骨类" data-note="豆角一定要煮熟" data-ingredients="排骨|豆角|土豆"><span class="dish-name">豆角土豆炖排骨 </span><small>豆角一定要煮熟</small></label>
+<label class="dish-card" data-name="胡萝卜土豆炖排骨粉条" data-dish="胡萝卜土豆炖排骨粉条"><input type="checkbox" class="dish-check" value="胡萝卜土豆炖排骨粉条" data-category="荤菜" data-group="猪肉｜排骨类" data-note="" data-ingredients="排骨|胡萝卜|土豆|粉条"><span class="dish-name">胡萝卜土豆炖排骨粉条 </span></label>
+<label class="dish-card" data-name="梅酱猪排" data-dish="梅酱猪排"><input type="checkbox" class="dish-check" value="梅酱猪排" data-category="荤菜" data-group="猪肉｜排骨类" data-note="" data-ingredients=""><span class="dish-name">梅酱猪排 </span></label>
+</div></details>
+<details class="group" open><summary>猪肉｜肉丝、肉片、肉末类 <span class="count">13</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="木须肉" data-dish="木须肉"><input type="checkbox" class="dish-check" value="木须肉" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="黄瓜、鸡蛋、里脊肉、胡萝卜" data-ingredients="里脊肉|黄瓜|鸡蛋|胡萝卜|木耳"><span class="dish-name">木须肉 </span><small>黄瓜、鸡蛋、里脊肉、胡萝卜</small></label>
+<label class="dish-card" data-name="肉末豆腐" data-dish="肉末豆腐"><input type="checkbox" class="dish-check" value="肉末豆腐" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="猪肉末|豆腐|小葱"><span class="dish-name">肉末豆腐 <span class="tag kid">孩子喜欢</span></span></label>
+<label class="dish-card" data-name="蒜苔炒细肉丝" data-dish="蒜苔炒细肉丝"><input type="checkbox" class="dish-check" value="蒜苔炒细肉丝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="蒜苔|里脊肉"><span class="dish-name">蒜苔炒细肉丝 </span></label>
+<label class="dish-card" data-name="茭白炒肉丝" data-dish="茭白炒肉丝"><input type="checkbox" class="dish-check" value="茭白炒肉丝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="茭白|里脊肉"><span class="dish-name">茭白炒肉丝 </span></label>
+<label class="dish-card" data-name="糖醋里脊" data-dish="糖醋里脊"><input type="checkbox" class="dish-check" value="糖醋里脊" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="里脊肉|鸡蛋|淀粉"><span class="dish-name">糖醋里脊 </span></label>
+<label class="dish-card" data-name="锅包肉（村驴）" data-dish="锅包肉（村驴）"><input type="checkbox" class="dish-check" value="锅包肉（村驴）" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients=""><span class="dish-name">锅包肉（村驴） </span></label>
+<label class="dish-card" data-name="回锅肉" data-dish="回锅肉"><input type="checkbox" class="dish-check" value="回锅肉" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="五花肉|青椒|蒜苗"><span class="dish-name">回锅肉 <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="鱼香肉丝" data-dish="鱼香肉丝"><input type="checkbox" class="dish-check" value="鱼香肉丝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients=""><span class="dish-name">鱼香肉丝 <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="京酱肉丝" data-dish="京酱肉丝"><input type="checkbox" class="dish-check" value="京酱肉丝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients=""><span class="dish-name">京酱肉丝 </span></label>
+<label class="dish-card" data-name="肉末茄子" data-dish="肉末茄子"><input type="checkbox" class="dish-check" value="肉末茄子" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="茄子"><span class="dish-name">肉末茄子 </span></label>
+<label class="dish-card" data-name="肉末粉丝" data-dish="肉末粉丝"><input type="checkbox" class="dish-check" value="肉末粉丝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients=""><span class="dish-name">肉末粉丝 </span></label>
+<label class="dish-card" data-name="黄瓜拌猪肝" data-dish="黄瓜拌猪肝"><input type="checkbox" class="dish-check" value="黄瓜拌猪肝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="不放任何蒜" data-ingredients="黄瓜"><span class="dish-name">黄瓜拌猪肝 </span><small>不放任何蒜</small></label>
+<label class="dish-card" data-name="拌猪肝" data-dish="拌猪肝"><input type="checkbox" class="dish-check" value="拌猪肝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="不放任何蒜" data-ingredients=""><span class="dish-name">拌猪肝 </span><small>不放任何蒜</small></label>
+</div></details>
+<details class="group" open><summary>猪肉｜丸子、五花肉及其他 <span class="count">9</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="四喜丸子" data-dish="四喜丸子"><input type="checkbox" class="dish-check" value="四喜丸子" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="" data-ingredients="猪肉馅|鸡蛋"><span class="dish-name">四喜丸子 </span></label>
+<label class="dish-card" data-name="珍珠丸子" data-dish="珍珠丸子"><input type="checkbox" class="dish-check" value="珍珠丸子" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="" data-ingredients="猪肉馅|糯米"><span class="dish-name">珍珠丸子 </span></label>
+<label class="dish-card" data-name="冬瓜丸子粉丝汤" data-dish="冬瓜丸子粉丝汤"><input type="checkbox" class="dish-check" value="冬瓜丸子粉丝汤" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="粉丝多煮一会，不容易熟" data-ingredients="猪肉馅|冬瓜|粉丝"><span class="dish-name">冬瓜丸子粉丝汤 </span><small>粉丝多煮一会，不容易熟</small></label>
+<label class="dish-card" data-name="豆腐娃娃菜炖粉条（少量五花肉）" data-dish="豆腐娃娃菜炖粉条（少量五花肉）"><input type="checkbox" class="dish-check" value="豆腐娃娃菜炖粉条（少量五花肉）" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="" data-ingredients="豆腐|娃娃菜|粉条|五花肉"><span class="dish-name">豆腐娃娃菜炖粉条（少量五花肉） </span></label>
+<label class="dish-card" data-name="扁豆五花肉焖面" data-dish="扁豆五花肉焖面"><input type="checkbox" class="dish-check" value="扁豆五花肉焖面" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="" data-ingredients="面条"><span class="dish-name">扁豆五花肉焖面 </span></label>
+<label class="dish-card" data-name="卤肉饭" data-dish="卤肉饭"><input type="checkbox" class="dish-check" value="卤肉饭" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="参考食谱，放2个鸡蛋、胡萝卜" data-ingredients=""><span class="dish-name">卤肉饭 </span><small>参考食谱，放2个鸡蛋、胡萝卜</small></label>
+<label class="dish-card" data-name="红烧肉" data-dish="红烧肉"><input type="checkbox" class="dish-check" value="红烧肉" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="" data-ingredients=""><span class="dish-name">红烧肉 </span></label>
+<label class="dish-card" data-name="梅菜扣肉" data-dish="梅菜扣肉"><input type="checkbox" class="dish-check" value="梅菜扣肉" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="" data-ingredients=""><span class="dish-name">梅菜扣肉 </span></label>
+<label class="dish-card" data-name="蒜泥白肉" data-dish="蒜泥白肉"><input type="checkbox" class="dish-check" value="蒜泥白肉" data-category="荤菜" data-group="猪肉｜丸子、五花肉及其他" data-note="" data-ingredients=""><span class="dish-name">蒜泥白肉 </span></label>
+</div></details>
+<details class="group" open><summary>牛肉类 <span class="count">14</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="胡萝卜炖牛肉" data-dish="胡萝卜炖牛肉"><input type="checkbox" class="dish-check" value="胡萝卜炖牛肉" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients="牛肉|胡萝卜"><span class="dish-name">胡萝卜炖牛肉 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="西红柿炖牛尾骨" data-dish="西红柿炖牛尾骨"><input type="checkbox" class="dish-check" value="西红柿炖牛尾骨" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients="牛尾骨|西红柿"><span class="dish-name">西红柿炖牛尾骨 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="土豆胡萝卜炖牛腩（村驴）" data-dish="土豆胡萝卜炖牛腩（村驴）"><input type="checkbox" class="dish-check" value="土豆胡萝卜炖牛腩（村驴）" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients="牛腩|土豆|胡萝卜"><span class="dish-name">土豆胡萝卜炖牛腩（村驴） <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="清炖牛肋条" data-dish="清炖牛肋条"><input type="checkbox" class="dish-check" value="清炖牛肋条" data-category="荤菜" data-group="牛肉类" data-note="参考食谱，小料2个，分放辣和不辣；留些肉和汤第二天吃" data-ingredients="牛肋条|姜|香菜"><span class="dish-name">清炖牛肋条 <span class="tag mom">妈妈喜欢</span></span><small>参考食谱，小料2个，分放辣和不辣；留些肉和汤第二天吃</small></label>
+<label class="dish-card" data-name="牛肋条豆皮红薯粉" data-dish="牛肋条豆皮红薯粉"><input type="checkbox" class="dish-check" value="牛肋条豆皮红薯粉" data-category="荤菜" data-group="牛肉类" data-note="做3小碗汤；牛肉切小块；牛肉汤+红薯粉+豆皮丝+部分莲藕" data-ingredients="牛肋条|豆皮|红薯粉|莲藕"><span class="dish-name">牛肋条豆皮红薯粉 <span class="tag mom">妈妈喜欢</span></span><small>做3小碗汤；牛肉切小块；牛肉汤+红薯粉+豆皮丝+部分莲藕</small></label>
+<label class="dish-card" data-name="卤牛腱子" data-dish="卤牛腱子"><input type="checkbox" class="dish-check" value="卤牛腱子" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients="牛腱子"><span class="dish-name">卤牛腱子 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="牛肉面" data-dish="牛肉面"><input type="checkbox" class="dish-check" value="牛肉面" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients="牛腱子|面条|香菜"><span class="dish-name">牛肉面 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="葱烧肥牛饭" data-dish="葱烧肥牛饭"><input type="checkbox" class="dish-check" value="葱烧肥牛饭" data-category="荤菜" data-group="牛肉类" data-note="放洋葱、鸡蛋" data-ingredients="肥牛|洋葱|鸡蛋|大米"><span class="dish-name">葱烧肥牛饭 </span><small>放洋葱、鸡蛋</small></label>
+<label class="dish-card" data-name="番茄豆腐肥牛小白菜锅" data-dish="番茄豆腐肥牛小白菜锅"><input type="checkbox" class="dish-check" value="番茄豆腐肥牛小白菜锅" data-category="荤菜" data-group="牛肉类" data-note="放洋葱和番茄酱；肥牛先简单烫一下，最后放，不要久煮" data-ingredients="西红柿|豆腐|肥牛|小白菜|洋葱"><span class="dish-name">番茄豆腐肥牛小白菜锅 </span><small>放洋葱和番茄酱；肥牛先简单烫一下，最后放，不要久煮</small></label>
+<label class="dish-card" data-name="菠萝拌牛肉香菜" data-dish="菠萝拌牛肉香菜"><input type="checkbox" class="dish-check" value="菠萝拌牛肉香菜" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients="牛肉|菠萝|香菜"><span class="dish-name">菠萝拌牛肉香菜 </span></label>
+<label class="dish-card" data-name="黑椒牛柳" data-dish="黑椒牛柳"><input type="checkbox" class="dish-check" value="黑椒牛柳" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients=""><span class="dish-name">黑椒牛柳 </span></label>
+<label class="dish-card" data-name="洋葱炒牛肉" data-dish="洋葱炒牛肉"><input type="checkbox" class="dish-check" value="洋葱炒牛肉" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients=""><span class="dish-name">洋葱炒牛肉 </span></label>
+<label class="dish-card" data-name="金针菇肥牛" data-dish="金针菇肥牛"><input type="checkbox" class="dish-check" value="金针菇肥牛" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients="肥牛"><span class="dish-name">金针菇肥牛 </span></label>
+<label class="dish-card" data-name="三酱牛肉" data-dish="三酱牛肉"><input type="checkbox" class="dish-check" value="三酱牛肉" data-category="荤菜" data-group="牛肉类" data-note="" data-ingredients=""><span class="dish-name">三酱牛肉 </span></label>
+</div></details>
+<details class="group" open><summary>羊肉类 <span class="count">6</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="孜然羊肉" data-dish="孜然羊肉"><input type="checkbox" class="dish-check" value="孜然羊肉" data-category="荤菜" data-group="羊肉类" data-note="" data-ingredients="羊肉"><span class="dish-name">孜然羊肉 <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="葱爆羊肉" data-dish="葱爆羊肉"><input type="checkbox" class="dish-check" value="葱爆羊肉" data-category="荤菜" data-group="羊肉类" data-note="" data-ingredients="羊肉"><span class="dish-name">葱爆羊肉 <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="羊肉葱花饼" data-dish="羊肉葱花饼"><input type="checkbox" class="dish-check" value="羊肉葱花饼" data-category="荤菜" data-group="羊肉类" data-note="" data-ingredients="羊肉馅|牛肉馅|小葱|面粉"><span class="dish-name">羊肉葱花饼 </span></label>
+<label class="dish-card" data-name="羊肉串" data-dish="羊肉串"><input type="checkbox" class="dish-check" value="羊肉串" data-category="荤菜" data-group="羊肉类" data-note="180℃ 9分钟" data-ingredients="羊肉"><span class="dish-name">羊肉串 </span><small>180℃ 9分钟</small></label>
+<label class="dish-card" data-name="羊肉汤" data-dish="羊肉汤"><input type="checkbox" class="dish-check" value="羊肉汤" data-category="荤菜" data-group="羊肉类" data-note="" data-ingredients="羊肉"><span class="dish-name">羊肉汤 </span></label>
+<label class="dish-card" data-name="羊骨白菜粉丝汤" data-dish="羊骨白菜粉丝汤"><input type="checkbox" class="dish-check" value="羊骨白菜粉丝汤" data-category="荤菜" data-group="羊肉类" data-note="" data-ingredients=""><span class="dish-name">羊骨白菜粉丝汤 </span></label>
+</div></details>
+<details class="group" open><summary>鱼类 <span class="count">9</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="红烧桂鱼" data-dish="红烧桂鱼"><input type="checkbox" class="dish-check" value="红烧桂鱼" data-category="荤菜" data-group="鱼类" data-note="" data-ingredients="桂鱼|葱|姜"><span class="dish-name">红烧桂鱼 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="清蒸桂鱼" data-dish="清蒸桂鱼"><input type="checkbox" class="dish-check" value="清蒸桂鱼" data-category="荤菜" data-group="鱼类" data-note="" data-ingredients="桂鱼|葱|姜"><span class="dish-name">清蒸桂鱼 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="噶鱼炖豆腐粉条" data-dish="噶鱼炖豆腐粉条"><input type="checkbox" class="dish-check" value="噶鱼炖豆腐粉条" data-category="荤菜" data-group="鱼类" data-note="" data-ingredients="噶鱼|豆腐|粉条"><span class="dish-name">噶鱼炖豆腐粉条 </span></label>
+<label class="dish-card" data-name="红烧罗非鱼" data-dish="红烧罗非鱼"><input type="checkbox" class="dish-check" value="红烧罗非鱼" data-category="荤菜" data-group="鱼类" data-note="鱼腹内壁黑膜完全去除，腥味重，处理干净" data-ingredients="罗非鱼|葱|姜"><span class="dish-name">红烧罗非鱼 </span><small>鱼腹内壁黑膜完全去除，腥味重，处理干净</small></label>
+<label class="dish-card" data-name="清蒸鳕鱼" data-dish="清蒸鳕鱼"><input type="checkbox" class="dish-check" value="清蒸鳕鱼" data-category="荤菜" data-group="鱼类" data-note="少放油" data-ingredients="鳕鱼|葱|姜"><span class="dish-name">清蒸鳕鱼 <span class="tag mom">妈妈喜欢</span></span><small>少放油</small></label>
+<label class="dish-card" data-name="红烧鲈鱼" data-dish="红烧鲈鱼"><input type="checkbox" class="dish-check" value="红烧鲈鱼" data-category="荤菜" data-group="鱼类" data-note="" data-ingredients="鲈鱼"><span class="dish-name">红烧鲈鱼 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="清蒸鲈鱼" data-dish="清蒸鲈鱼"><input type="checkbox" class="dish-check" value="清蒸鲈鱼" data-category="荤菜" data-group="鱼类" data-note="" data-ingredients="鲈鱼"><span class="dish-name">清蒸鲈鱼 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="黄花鱼" data-dish="黄花鱼"><input type="checkbox" class="dish-check" value="黄花鱼" data-category="荤菜" data-group="鱼类" data-note="" data-ingredients="黄花鱼"><span class="dish-name">黄花鱼 </span></label>
+<label class="dish-card" data-name="多宝鱼" data-dish="多宝鱼"><input type="checkbox" class="dish-check" value="多宝鱼" data-category="荤菜" data-group="鱼类" data-note="" data-ingredients="多宝鱼"><span class="dish-name">多宝鱼 </span></label>
+</div></details>
+<details class="group" open><summary>虾及海鲜类 <span class="count">9</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="芦笋白蘑菇炒虾仁" data-dish="芦笋白蘑菇炒虾仁"><input type="checkbox" class="dish-check" value="芦笋白蘑菇炒虾仁" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="芦笋|白蘑菇|虾仁"><span class="dish-name">芦笋白蘑菇炒虾仁 </span></label>
+<label class="dish-card" data-name="番茄豆腐鲜虾煲" data-dish="番茄豆腐鲜虾煲"><input type="checkbox" class="dish-check" value="番茄豆腐鲜虾煲" data-category="荤菜" data-group="虾及海鲜类" data-note="砂锅做；鲜虾挑虾线；放番茄、豆腐、金针菇、西兰花" data-ingredients="西红柿|豆腐|金针菇|西兰花|鲜虾"><span class="dish-name">番茄豆腐鲜虾煲 </span><small>砂锅做；鲜虾挑虾线；放番茄、豆腐、金针菇、西兰花</small></label>
+<label class="dish-card" data-name="宫保虾球（村驴）" data-dish="宫保虾球（村驴）"><input type="checkbox" class="dish-check" value="宫保虾球（村驴）" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="虾仁|花生米"><span class="dish-name">宫保虾球（村驴） <span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="黄瓜鸡蛋炒虾仁" data-dish="黄瓜鸡蛋炒虾仁"><input type="checkbox" class="dish-check" value="黄瓜鸡蛋炒虾仁" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="黄瓜|鸡蛋|虾仁|木耳|胡萝卜"><span class="dish-name">黄瓜鸡蛋炒虾仁 </span></label>
+<label class="dish-card" data-name="丝瓜虾仁" data-dish="丝瓜虾仁"><input type="checkbox" class="dish-check" value="丝瓜虾仁" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="丝瓜|虾仁"><span class="dish-name">丝瓜虾仁 </span></label>
+<label class="dish-card" data-name="油焖大虾" data-dish="油焖大虾"><input type="checkbox" class="dish-check" value="油焖大虾" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="虾仁"><span class="dish-name">油焖大虾 </span></label>
+<label class="dish-card" data-name="白灼虾" data-dish="白灼虾"><input type="checkbox" class="dish-check" value="白灼虾" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="虾仁"><span class="dish-name">白灼虾 </span></label>
+<label class="dish-card" data-name="丝瓜虾滑汤" data-dish="丝瓜虾滑汤"><input type="checkbox" class="dish-check" value="丝瓜虾滑汤" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="丝瓜|虾滑"><span class="dish-name">丝瓜虾滑汤 </span></label>
+<label class="dish-card" data-name="煎青椒虾滑胡萝卜" data-dish="煎青椒虾滑胡萝卜"><input type="checkbox" class="dish-check" value="煎青椒虾滑胡萝卜" data-category="荤菜" data-group="虾及海鲜类" data-note="" data-ingredients="青椒|虾滑|胡萝卜"><span class="dish-name">煎青椒虾滑胡萝卜 </span></label>
+</div></details>
+<details class="group" open><summary>腊肉类 <span class="count">2</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="冬笋炒腊肉" data-dish="冬笋炒腊肉"><input type="checkbox" class="dish-check" value="冬笋炒腊肉" data-category="荤菜" data-group="腊肉类" data-note="不放盐，最后放大蒜苗" data-ingredients=""><span class="dish-name">冬笋炒腊肉 </span><small>不放盐，最后放大蒜苗</small></label>
+<label class="dish-card" data-name="芦笋炒腊肉" data-dish="芦笋炒腊肉"><input type="checkbox" class="dish-check" value="芦笋炒腊肉" data-category="荤菜" data-group="腊肉类" data-note="腊肉清洗一下，切小块" data-ingredients=""><span class="dish-name">芦笋炒腊肉 </span><small>腊肉清洗一下，切小块</small></label>
+</div></details>
+</section>
+<section class="menu-section" data-category="素菜"><h2>素菜</h2>
+<details class="group" open><summary>热菜｜炒蛋类 <span class="count">10</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="苦瓜炒鸡蛋豆腐" data-dish="苦瓜炒鸡蛋豆腐"><input type="checkbox" class="dish-check" value="苦瓜炒鸡蛋豆腐" data-category="素菜" data-group="热菜｜炒蛋类" data-note="归类为炒蛋类素菜" data-ingredients="苦瓜|鸡蛋|豆腐"><span class="dish-name">苦瓜炒鸡蛋豆腐 </span><small>归类为炒蛋类素菜</small></label>
+<label class="dish-card" data-name="丝瓜炒鸡蛋" data-dish="丝瓜炒鸡蛋"><input type="checkbox" class="dish-check" value="丝瓜炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="丝瓜|鸡蛋"><span class="dish-name">丝瓜炒鸡蛋 </span></label>
+<label class="dish-card" data-name="西兰花西红柿炒鸡蛋" data-dish="西兰花西红柿炒鸡蛋"><input type="checkbox" class="dish-check" value="西兰花西红柿炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="西兰花|西红柿|鸡蛋"><span class="dish-name">西兰花西红柿炒鸡蛋 </span></label>
+<label class="dish-card" data-name="胡萝卜洋葱炒鸡蛋" data-dish="胡萝卜洋葱炒鸡蛋"><input type="checkbox" class="dish-check" value="胡萝卜洋葱炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="胡萝卜|洋葱|鸡蛋"><span class="dish-name">胡萝卜洋葱炒鸡蛋 </span></label>
+<label class="dish-card" data-name="西红柿炒鸡蛋" data-dish="西红柿炒鸡蛋"><input type="checkbox" class="dish-check" value="西红柿炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="西红柿|鸡蛋"><span class="dish-name">西红柿炒鸡蛋 <span class="tag kid">孩子喜欢</span></span></label>
+<label class="dish-card" data-name="黄瓜炒鸡蛋" data-dish="黄瓜炒鸡蛋"><input type="checkbox" class="dish-check" value="黄瓜炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="鸡蛋|黄瓜"><span class="dish-name">黄瓜炒鸡蛋 </span></label>
+<label class="dish-card" data-name="韭菜炒鸡蛋" data-dish="韭菜炒鸡蛋"><input type="checkbox" class="dish-check" value="韭菜炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="鸡蛋"><span class="dish-name">韭菜炒鸡蛋 </span></label>
+<label class="dish-card" data-name="蒜黄炒鸡蛋" data-dish="蒜黄炒鸡蛋"><input type="checkbox" class="dish-check" value="蒜黄炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="鸡蛋"><span class="dish-name">蒜黄炒鸡蛋 </span></label>
+<label class="dish-card" data-name="青椒炒鸡蛋" data-dish="青椒炒鸡蛋"><input type="checkbox" class="dish-check" value="青椒炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="鸡蛋"><span class="dish-name">青椒炒鸡蛋 </span></label>
+<label class="dish-card" data-name="木耳胡萝卜炒鸡蛋" data-dish="木耳胡萝卜炒鸡蛋"><input type="checkbox" class="dish-check" value="木耳胡萝卜炒鸡蛋" data-category="素菜" data-group="热菜｜炒蛋类" data-note="" data-ingredients="鸡蛋"><span class="dish-name">木耳胡萝卜炒鸡蛋 </span></label>
+</div></details>
+<details class="group" open><summary>热菜｜豆腐、豆制品类 <span class="count">8</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="白菜烧豆腐" data-dish="白菜烧豆腐"><input type="checkbox" class="dish-check" value="白菜烧豆腐" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients="白菜|豆腐"><span class="dish-name">白菜烧豆腐 </span></label>
+<label class="dish-card" data-name="家常豆腐" data-dish="家常豆腐"><input type="checkbox" class="dish-check" value="家常豆腐" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients="豆腐|青椒|木耳"><span class="dish-name">家常豆腐 </span></label>
+<label class="dish-card" data-name="豆腐娃娃菜炖粉条（纯素版）" data-dish="豆腐娃娃菜炖粉条（纯素版）"><input type="checkbox" class="dish-check" value="豆腐娃娃菜炖粉条（纯素版）" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients="豆腐|娃娃菜|粉条"><span class="dish-name">豆腐娃娃菜炖粉条（纯素版） </span></label>
+<label class="dish-card" data-name="蒜苔炒香干" data-dish="蒜苔炒香干"><input type="checkbox" class="dish-check" value="蒜苔炒香干" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients="蒜苔|香干"><span class="dish-name">蒜苔炒香干 </span></label>
+<label class="dish-card" data-name="蒜苔炒豆干" data-dish="蒜苔炒豆干"><input type="checkbox" class="dish-check" value="蒜苔炒豆干" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients=""><span class="dish-name">蒜苔炒豆干 </span></label>
+<label class="dish-card" data-name="香菇豆腐" data-dish="香菇豆腐"><input type="checkbox" class="dish-check" value="香菇豆腐" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients="豆腐"><span class="dish-name">香菇豆腐 </span></label>
+<label class="dish-card" data-name="包浆豆腐" data-dish="包浆豆腐"><input type="checkbox" class="dish-check" value="包浆豆腐" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="180℃ 12分钟" data-ingredients="豆腐"><span class="dish-name">包浆豆腐 </span><small>180℃ 12分钟</small></label>
+<label class="dish-card" data-name="素生煎包馅" data-dish="素生煎包馅"><input type="checkbox" class="dish-check" value="素生煎包馅" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients=""><span class="dish-name">素生煎包馅 </span></label>
+</div></details>
+<details class="group" open><summary>热菜｜茄子、土豆类 <span class="count">6</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="风味茄子（村驴）" data-dish="风味茄子（村驴）"><input type="checkbox" class="dish-check" value="风味茄子（村驴）" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">风味茄子（村驴） <span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="地三鲜" data-dish="地三鲜"><input type="checkbox" class="dish-check" value="地三鲜" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="青椒|土豆|胡萝卜"><span class="dish-name">地三鲜 </span></label>
+<label class="dish-card" data-name="茄子土豆西红柿" data-dish="茄子土豆西红柿"><input type="checkbox" class="dish-check" value="茄子土豆西红柿" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子|土豆|西红柿"><span class="dish-name">茄子土豆西红柿 </span></label>
+<label class="dish-card" data-name="蒜蓉茄子" data-dish="蒜蓉茄子"><input type="checkbox" class="dish-check" value="蒜蓉茄子" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">蒜蓉茄子 </span></label>
+<label class="dish-card" data-name="红烧茄子" data-dish="红烧茄子"><input type="checkbox" class="dish-check" value="红烧茄子" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">红烧茄子 </span></label>
+<label class="dish-card" data-name="尖椒土豆丝" data-dish="尖椒土豆丝"><input type="checkbox" class="dish-check" value="尖椒土豆丝" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="尖椒|土豆"><span class="dish-name">尖椒土豆丝 <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
+</div></details>
+<details class="group" open><summary>热菜｜菌菇类 <span class="count">5</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="黄油煎口蘑" data-dish="黄油煎口蘑"><input type="checkbox" class="dish-check" value="黄油煎口蘑" data-category="素菜" data-group="热菜｜菌菇类" data-note="" data-ingredients="口蘑|黄油"><span class="dish-name">黄油煎口蘑 </span></label>
+<label class="dish-card" data-name="蒜蓉黄油煎白蘑菇" data-dish="蒜蓉黄油煎白蘑菇"><input type="checkbox" class="dish-check" value="蒜蓉黄油煎白蘑菇" data-category="素菜" data-group="热菜｜菌菇类" data-note="" data-ingredients="白蘑菇|黄油|蒜"><span class="dish-name">蒜蓉黄油煎白蘑菇 </span></label>
+<label class="dish-card" data-name="香菇青菜" data-dish="香菇青菜"><input type="checkbox" class="dish-check" value="香菇青菜" data-category="素菜" data-group="热菜｜菌菇类" data-note="" data-ingredients=""><span class="dish-name">香菇青菜 </span></label>
+<label class="dish-card" data-name="白蘑菇炒西兰花" data-dish="白蘑菇炒西兰花"><input type="checkbox" class="dish-check" value="白蘑菇炒西兰花" data-category="素菜" data-group="热菜｜菌菇类" data-note="" data-ingredients="西兰花|白蘑菇"><span class="dish-name">白蘑菇炒西兰花 </span></label>
+<label class="dish-card" data-name="芦笋炒白蘑菇" data-dish="芦笋炒白蘑菇"><input type="checkbox" class="dish-check" value="芦笋炒白蘑菇" data-category="素菜" data-group="热菜｜菌菇类" data-note="" data-ingredients="白蘑菇"><span class="dish-name">芦笋炒白蘑菇 </span></label>
+</div></details>
+<details class="group" open><summary>热菜｜绿叶菜类 <span class="count">8</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="清炒西兰花" data-dish="清炒西兰花"><input type="checkbox" class="dish-check" value="清炒西兰花" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients="西兰花|蒜"><span class="dish-name">清炒西兰花 </span></label>
+<label class="dish-card" data-name="清炒小白菜" data-dish="清炒小白菜"><input type="checkbox" class="dish-check" value="清炒小白菜" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients="小白菜"><span class="dish-name">清炒小白菜 </span></label>
+<label class="dish-card" data-name="蒜蓉油麦菜" data-dish="蒜蓉油麦菜"><input type="checkbox" class="dish-check" value="蒜蓉油麦菜" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients=""><span class="dish-name">蒜蓉油麦菜 </span></label>
+<label class="dish-card" data-name="清炒菠菜" data-dish="清炒菠菜"><input type="checkbox" class="dish-check" value="清炒菠菜" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients="菠菜"><span class="dish-name">清炒菠菜 </span></label>
+<label class="dish-card" data-name="清炒生菜" data-dish="清炒生菜"><input type="checkbox" class="dish-check" value="清炒生菜" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients=""><span class="dish-name">清炒生菜 </span></label>
+<label class="dish-card" data-name="清炒芥蓝" data-dish="清炒芥蓝"><input type="checkbox" class="dish-check" value="清炒芥蓝" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients=""><span class="dish-name">清炒芥蓝 </span></label>
+<label class="dish-card" data-name="清炒空心菜" data-dish="清炒空心菜"><input type="checkbox" class="dish-check" value="清炒空心菜" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients=""><span class="dish-name">清炒空心菜 </span></label>
+<label class="dish-card" data-name="芋艿小白菜" data-dish="芋艿小白菜"><input type="checkbox" class="dish-check" value="芋艿小白菜" data-category="素菜" data-group="热菜｜绿叶菜类" data-note="" data-ingredients="芋艿|小白菜"><span class="dish-name">芋艿小白菜 </span></label>
+</div></details>
+<details class="group" open><summary>热菜｜瓜果、根茎及杂菜 <span class="count">8</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="白灼秋葵" data-dish="白灼秋葵"><input type="checkbox" class="dish-check" value="白灼秋葵" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="秋葵"><span class="dish-name">白灼秋葵 </span></label>
+<label class="dish-card" data-name="秋葵炒山药木耳" data-dish="秋葵炒山药木耳"><input type="checkbox" class="dish-check" value="秋葵炒山药木耳" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="秋葵|山药|木耳"><span class="dish-name">秋葵炒山药木耳 </span></label>
+<label class="dish-card" data-name="清炒苦瓜" data-dish="清炒苦瓜"><input type="checkbox" class="dish-check" value="清炒苦瓜" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="苦瓜"><span class="dish-name">清炒苦瓜 </span></label>
+<label class="dish-card" data-name="清炒西葫芦" data-dish="清炒西葫芦"><input type="checkbox" class="dish-check" value="清炒西葫芦" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients=""><span class="dish-name">清炒西葫芦 </span></label>
+<label class="dish-card" data-name="蒸贝贝南瓜" data-dish="蒸贝贝南瓜"><input type="checkbox" class="dish-check" value="蒸贝贝南瓜" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="贝贝南瓜"><span class="dish-name">蒸贝贝南瓜 </span></label>
+<label class="dish-card" data-name="松仁玉米" data-dish="松仁玉米"><input type="checkbox" class="dish-check" value="松仁玉米" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="松仁|玉米"><span class="dish-name">松仁玉米 </span></label>
+<label class="dish-card" data-name="炸素丸子" data-dish="炸素丸子"><input type="checkbox" class="dish-check" value="炸素丸子" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="胡萝卜|土豆|香菜|小葱"><span class="dish-name">炸素丸子 </span></label>
+<label class="dish-card" data-name="玉米青豆胡萝卜丁" data-dish="玉米青豆胡萝卜丁"><input type="checkbox" class="dish-check" value="玉米青豆胡萝卜丁" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="玉米"><span class="dish-name">玉米青豆胡萝卜丁 </span></label>
+</div></details>
+<details class="group" open><summary>凉菜｜黄瓜类 <span class="count">4</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="黄瓜花生米拌粉丝" data-dish="黄瓜花生米拌粉丝"><input type="checkbox" class="dish-check" value="黄瓜花生米拌粉丝" data-category="素菜" data-group="凉菜｜黄瓜类" data-note="花生米炸一下，黄瓜去皮，不放香油" data-ingredients="黄瓜|花生米|粉丝"><span class="dish-name">黄瓜花生米拌粉丝 </span><small>花生米炸一下，黄瓜去皮，不放香油</small></label>
+<label class="dish-card" data-name="黄瓜丝拌粉丝花生米" data-dish="黄瓜丝拌粉丝花生米"><input type="checkbox" class="dish-check" value="黄瓜丝拌粉丝花生米" data-category="素菜" data-group="凉菜｜黄瓜类" data-note="" data-ingredients="黄瓜|花生米|粉丝"><span class="dish-name">黄瓜丝拌粉丝花生米 </span></label>
+<label class="dish-card" data-name="拍黄瓜" data-dish="拍黄瓜"><input type="checkbox" class="dish-check" value="拍黄瓜" data-category="素菜" data-group="凉菜｜黄瓜类" data-note="" data-ingredients="黄瓜"><span class="dish-name">拍黄瓜 </span></label>
+<label class="dish-card" data-name="黄瓜拌木耳" data-dish="黄瓜拌木耳"><input type="checkbox" class="dish-check" value="黄瓜拌木耳" data-category="素菜" data-group="凉菜｜黄瓜类" data-note="" data-ingredients="黄瓜"><span class="dish-name">黄瓜拌木耳 </span></label>
+</div></details>
+<details class="group" open><summary>凉菜｜其他 <span class="count">6</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="糖拌西红柿" data-dish="糖拌西红柿"><input type="checkbox" class="dish-check" value="糖拌西红柿" data-category="素菜" data-group="凉菜｜其他" data-note="少放糖" data-ingredients="西红柿"><span class="dish-name">糖拌西红柿 </span><small>少放糖</small></label>
+<label class="dish-card" data-name="凉拌藕片" data-dish="凉拌藕片"><input type="checkbox" class="dish-check" value="凉拌藕片" data-category="素菜" data-group="凉菜｜其他" data-note="" data-ingredients="莲藕"><span class="dish-name">凉拌藕片 </span></label>
+<label class="dish-card" data-name="菠菜拌粉丝" data-dish="菠菜拌粉丝"><input type="checkbox" class="dish-check" value="菠菜拌粉丝" data-category="素菜" data-group="凉菜｜其他" data-note="" data-ingredients="菠菜|粉丝"><span class="dish-name">菠菜拌粉丝 </span></label>
+<label class="dish-card" data-name="凉拌木耳" data-dish="凉拌木耳"><input type="checkbox" class="dish-check" value="凉拌木耳" data-category="素菜" data-group="凉菜｜其他" data-note="" data-ingredients=""><span class="dish-name">凉拌木耳 </span></label>
+<label class="dish-card" data-name="凉拌腐竹" data-dish="凉拌腐竹"><input type="checkbox" class="dish-check" value="凉拌腐竹" data-category="素菜" data-group="凉菜｜其他" data-note="" data-ingredients=""><span class="dish-name">凉拌腐竹 </span></label>
+<label class="dish-card" data-name="凉拌三丝" data-dish="凉拌三丝"><input type="checkbox" class="dish-check" value="凉拌三丝" data-category="素菜" data-group="凉菜｜其他" data-note="" data-ingredients=""><span class="dish-name">凉拌三丝 </span></label>
+</div></details>
+</section>
+<section class="menu-section" data-category="汤或粥"><h2>汤或粥</h2>
+<details class="group" open><summary>汤类 <span class="count">11</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="鸽子汤" data-dish="鸽子汤"><input type="checkbox" class="dish-check" value="鸽子汤" data-category="汤或粥" data-group="汤类" data-note="按食谱，放姜、红枣、党参、枸杞、黄芪、百合、虫草" data-ingredients="鸽子|姜|红枣|党参|枸杞|黄芪|百合|虫草"><span class="dish-name">鸽子汤 <span class="tag mom">妈妈喜欢</span></span><small>按食谱，放姜、红枣、党参、枸杞、黄芪、百合、虫草</small></label>
+<label class="dish-card" data-name="萝卜汤" data-dish="萝卜汤"><input type="checkbox" class="dish-check" value="萝卜汤" data-category="汤或粥" data-group="汤类" data-note="" data-ingredients=""><span class="dish-name">萝卜汤 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="炖鸡汤（羊肚菌、虫草花）" data-dish="炖鸡汤（羊肚菌、虫草花）"><input type="checkbox" class="dish-check" value="炖鸡汤（羊肚菌、虫草花）" data-category="汤或粥" data-group="汤类" data-note="放羊肚菌、虫草花" data-ingredients="鸡|羊肚菌|虫草花"><span class="dish-name">炖鸡汤（羊肚菌、虫草花） <span class="tag mom">妈妈喜欢</span></span><small>放羊肚菌、虫草花</small></label>
+<label class="dish-card" data-name="菠菜西红柿蛋花汤" data-dish="菠菜西红柿蛋花汤"><input type="checkbox" class="dish-check" value="菠菜西红柿蛋花汤" data-category="汤或粥" data-group="汤类" data-note="" data-ingredients="菠菜|西红柿|鸡蛋"><span class="dish-name">菠菜西红柿蛋花汤 </span></label>
+<label class="dish-card" data-name="西红柿青菜山药疙瘩汤" data-dish="西红柿青菜山药疙瘩汤"><input type="checkbox" class="dish-check" value="西红柿青菜山药疙瘩汤" data-category="汤或粥" data-group="汤类" data-note="" data-ingredients="西红柿|青菜|山药|面粉"><span class="dish-name">西红柿青菜山药疙瘩汤 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="冬瓜丸子粉丝汤" data-dish="冬瓜丸子粉丝汤"><input type="checkbox" class="dish-check" value="冬瓜丸子粉丝汤" data-category="汤或粥" data-group="汤类" data-note="粉丝多煮一会，不容易熟" data-ingredients="猪肉馅|冬瓜|粉丝"><span class="dish-name">冬瓜丸子粉丝汤 </span><small>粉丝多煮一会，不容易熟</small></label>
+<label class="dish-card" data-name="丝瓜虾滑汤" data-dish="丝瓜虾滑汤"><input type="checkbox" class="dish-check" value="丝瓜虾滑汤" data-category="汤或粥" data-group="汤类" data-note="" data-ingredients="丝瓜|虾滑"><span class="dish-name">丝瓜虾滑汤 </span></label>
+<label class="dish-card" data-name="丝瓜鱼丸汤" data-dish="丝瓜鱼丸汤"><input type="checkbox" class="dish-check" value="丝瓜鱼丸汤" data-category="汤或粥" data-group="汤类" data-note="鱼丸用一半，丝瓜1根，做两小碗" data-ingredients="丝瓜|鱼丸"><span class="dish-name">丝瓜鱼丸汤 </span><small>鱼丸用一半，丝瓜1根，做两小碗</small></label>
+<label class="dish-card" data-name="牛尾汤" data-dish="牛尾汤"><input type="checkbox" class="dish-check" value="牛尾汤" data-category="汤或粥" data-group="汤类" data-note="" data-ingredients="牛尾骨"><span class="dish-name">牛尾汤 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="清炖牛肋条汤" data-dish="清炖牛肋条汤"><input type="checkbox" class="dish-check" value="清炖牛肋条汤" data-category="汤或粥" data-group="汤类" data-note="" data-ingredients="牛肋条"><span class="dish-name">清炖牛肋条汤 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="羊骨白菜粉丝汤" data-dish="羊骨白菜粉丝汤"><input type="checkbox" class="dish-check" value="羊骨白菜粉丝汤" data-category="汤或粥" data-group="汤类" data-note="" data-ingredients=""><span class="dish-name">羊骨白菜粉丝汤 </span></label>
+</div></details>
+<details class="group" open><summary>粥类 <span class="count">5</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="八宝粥" data-dish="八宝粥"><input type="checkbox" class="dish-check" value="八宝粥" data-category="汤或粥" data-group="粥类" data-note="红枣、红花生、莲子、红小豆、八宝粥米、少量冰糖" data-ingredients="红枣|红花生|莲子|红小豆|八宝粥米|冰糖"><span class="dish-name">八宝粥 </span><small>红枣、红花生、莲子、红小豆、八宝粥米、少量冰糖</small></label>
+<label class="dish-card" data-name="小米粥" data-dish="小米粥"><input type="checkbox" class="dish-check" value="小米粥" data-category="汤或粥" data-group="粥类" data-note="" data-ingredients="小米"><span class="dish-name">小米粥 </span></label>
+<label class="dish-card" data-name="白米粥" data-dish="白米粥"><input type="checkbox" class="dish-check" value="白米粥" data-category="汤或粥" data-group="粥类" data-note="" data-ingredients="相应粥米"><span class="dish-name">白米粥 </span></label>
+<label class="dish-card" data-name="南瓜小米粥" data-dish="南瓜小米粥"><input type="checkbox" class="dish-check" value="南瓜小米粥" data-category="汤或粥" data-group="粥类" data-note="" data-ingredients="相应粥米"><span class="dish-name">南瓜小米粥 </span></label>
+<label class="dish-card" data-name="山药小米粥" data-dish="山药小米粥"><input type="checkbox" class="dish-check" value="山药小米粥" data-category="汤或粥" data-group="粥类" data-note="" data-ingredients="相应粥米"><span class="dish-name">山药小米粥 </span></label>
+</div></details>
+</section>
+<section class="menu-section" data-category="主食"><h2>主食</h2>
+<details class="group" open><summary>米饭、焖饭及炒饭 <span class="count">6</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="米饭" data-dish="米饭"><input type="checkbox" class="dish-check" value="米饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="" data-ingredients="大米"><span class="dish-name">米饭 <span class="tag kid">孩子喜欢</span></span></label>
+<label class="dish-card" data-name="卤肉饭" data-dish="卤肉饭"><input type="checkbox" class="dish-check" value="卤肉饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="参考食谱，放2个鸡蛋、胡萝卜" data-ingredients=""><span class="dish-name">卤肉饭 </span><small>参考食谱，放2个鸡蛋、胡萝卜</small></label>
+<label class="dish-card" data-name="三文鱼焖饭" data-dish="三文鱼焖饭"><input type="checkbox" class="dish-check" value="三文鱼焖饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="黄油煎三文鱼；放胡萝卜丝、白蘑菇丝、洋葱、香菜和小葱" data-ingredients="三文鱼|胡萝卜|白蘑菇|洋葱|香菜|小葱|黄油|大米"><span class="dish-name">三文鱼焖饭 </span><small>黄油煎三文鱼；放胡萝卜丝、白蘑菇丝、洋葱、香菜和小葱</small></label>
+<label class="dish-card" data-name="鳕鱼炒饭" data-dish="鳕鱼炒饭"><input type="checkbox" class="dish-check" value="鳕鱼炒饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="鳕鱼蒸熟切小块；鸡蛋先炒出；加胡萝卜丁、黄瓜丁、洋葱末、小葱" data-ingredients="鳕鱼|鸡蛋|胡萝卜|黄瓜|洋葱|小葱|大米"><span class="dish-name">鳕鱼炒饭 </span><small>鳕鱼蒸熟切小块；鸡蛋先炒出；加胡萝卜丁、黄瓜丁、洋葱末、小葱</small></label>
+<label class="dish-card" data-name="芝士焗饭" data-dish="芝士焗饭"><input type="checkbox" class="dish-check" value="芝士焗饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="肥牛、西红柿、洋葱切小丁，放芝士碎" data-ingredients="肥牛|西红柿|洋葱|芝士碎|大米"><span class="dish-name">芝士焗饭 </span><small>肥牛、西红柿、洋葱切小丁，放芝士碎</small></label>
+<label class="dish-card" data-name="葱烧肥牛饭" data-dish="葱烧肥牛饭"><input type="checkbox" class="dish-check" value="葱烧肥牛饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="放洋葱、鸡蛋" data-ingredients="肥牛|洋葱|鸡蛋|大米"><span class="dish-name">葱烧肥牛饭 </span><small>放洋葱、鸡蛋</small></label>
+</div></details>
+<details class="group" open><summary>面条 <span class="count">6</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="茄丁面" data-dish="茄丁面"><input type="checkbox" class="dish-check" value="茄丁面" data-category="主食" data-group="面条" data-note="" data-ingredients="茄子|面条"><span class="dish-name">茄丁面 </span></label>
+<label class="dish-card" data-name="炸酱面" data-dish="炸酱面"><input type="checkbox" class="dish-check" value="炸酱面" data-category="主食" data-group="面条" data-note="" data-ingredients="猪肉末|面条|黄瓜"><span class="dish-name">炸酱面 </span></label>
+<label class="dish-card" data-name="牛肉面" data-dish="牛肉面"><input type="checkbox" class="dish-check" value="牛肉面" data-category="主食" data-group="面条" data-note="" data-ingredients="牛腱子|面条|香菜"><span class="dish-name">牛肉面 <span class="tag mom">妈妈喜欢</span></span></label>
+<label class="dish-card" data-name="番茄鸡蛋面" data-dish="番茄鸡蛋面"><input type="checkbox" class="dish-check" value="番茄鸡蛋面" data-category="主食" data-group="面条" data-note="" data-ingredients="鸡蛋|面条"><span class="dish-name">番茄鸡蛋面 </span></label>
+<label class="dish-card" data-name="扁豆五花肉焖面" data-dish="扁豆五花肉焖面"><input type="checkbox" class="dish-check" value="扁豆五花肉焖面" data-category="主食" data-group="面条" data-note="" data-ingredients="面条"><span class="dish-name">扁豆五花肉焖面 </span></label>
+<label class="dish-card" data-name="打卤面" data-dish="打卤面"><input type="checkbox" class="dish-check" value="打卤面" data-category="主食" data-group="面条" data-note="" data-ingredients="面条"><span class="dish-name">打卤面 </span></label>
+</div></details>
+<details class="group" open><summary>饺子、包子及面点 <span class="count">8</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="饺子-木耳/鸡蛋/胡萝卜/猪肉馅" data-dish="饺子-木耳/鸡蛋/胡萝卜/猪肉馅"><input type="checkbox" class="dish-check" value="饺子-木耳/鸡蛋/胡萝卜/猪肉馅" data-category="主食" data-group="饺子、包子及面点" data-note="" data-ingredients="木耳|鸡蛋|胡萝卜|猪肉馅|饺子皮"><span class="dish-name">饺子-木耳/鸡蛋/胡萝卜/猪肉馅 </span></label>
+<label class="dish-card" data-name="饺子-鸡蛋/胡萝卜/玉米/猪肉馅/木耳" data-dish="饺子-鸡蛋/胡萝卜/玉米/猪肉馅/木耳"><input type="checkbox" class="dish-check" value="饺子-鸡蛋/胡萝卜/玉米/猪肉馅/木耳" data-category="主食" data-group="饺子、包子及面点" data-note="" data-ingredients="鸡蛋|胡萝卜|玉米|猪肉馅|木耳|饺子皮"><span class="dish-name">饺子-鸡蛋/胡萝卜/玉米/猪肉馅/木耳 </span></label>
+<label class="dish-card" data-name="爆汁牛肉蒸饺（村驴）" data-dish="爆汁牛肉蒸饺（村驴）"><input type="checkbox" class="dish-check" value="爆汁牛肉蒸饺（村驴）" data-category="主食" data-group="饺子、包子及面点" data-note="" data-ingredients=""><span class="dish-name">爆汁牛肉蒸饺（村驴） </span></label>
+<label class="dish-card" data-name="素生煎包" data-dish="素生煎包"><input type="checkbox" class="dish-check" value="素生煎包" data-category="主食" data-group="饺子、包子及面点" data-note="豆腐丁+粉条+娃娃菜+胡萝卜，可再蒸馒头" data-ingredients="豆腐|粉条|娃娃菜|胡萝卜|面粉"><span class="dish-name">素生煎包 </span><small>豆腐丁+粉条+娃娃菜+胡萝卜，可再蒸馒头</small></label>
+<label class="dish-card" data-name="馒头" data-dish="馒头"><input type="checkbox" class="dish-check" value="馒头" data-category="主食" data-group="饺子、包子及面点" data-note="" data-ingredients=""><span class="dish-name">馒头 </span></label>
+<label class="dish-card" data-name="羊肉葱花饼" data-dish="羊肉葱花饼"><input type="checkbox" class="dish-check" value="羊肉葱花饼" data-category="主食" data-group="饺子、包子及面点" data-note="" data-ingredients="羊肉馅|牛肉馅|小葱|面粉"><span class="dish-name">羊肉葱花饼 </span></label>
+<label class="dish-card" data-name="花卷" data-dish="花卷"><input type="checkbox" class="dish-check" value="花卷" data-category="主食" data-group="饺子、包子及面点" data-note="" data-ingredients=""><span class="dish-name">花卷 </span></label>
+<label class="dish-card" data-name="冷冻欧包" data-dish="冷冻欧包"><input type="checkbox" class="dish-check" value="冷冻欧包" data-category="主食" data-group="饺子、包子及面点" data-note="喷水，160℃ 6分钟；不预热7分钟" data-ingredients=""><span class="dish-name">冷冻欧包 </span><small>喷水，160℃ 6分钟；不预热7分钟</small></label>
+</div></details>
+</section>
+<section class="menu-section" data-category="水果"><h2>水果</h2>
+<details class="group" open><summary>水果 <span class="count">15</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="苹果" data-dish="苹果"><input type="checkbox" class="dish-check" value="苹果" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">苹果 </span></label>
+<label class="dish-card" data-name="桃" data-dish="桃"><input type="checkbox" class="dish-check" value="桃" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">桃 </span></label>
+<label class="dish-card" data-name="猕猴桃" data-dish="猕猴桃"><input type="checkbox" class="dish-check" value="猕猴桃" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">猕猴桃 </span></label>
+<label class="dish-card" data-name="葡萄" data-dish="葡萄"><input type="checkbox" class="dish-check" value="葡萄" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">葡萄 </span></label>
+<label class="dish-card" data-name="西瓜" data-dish="西瓜"><input type="checkbox" class="dish-check" value="西瓜" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">西瓜 </span></label>
+<label class="dish-card" data-name="火龙果" data-dish="火龙果"><input type="checkbox" class="dish-check" value="火龙果" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">火龙果 </span></label>
+<label class="dish-card" data-name="橙子" data-dish="橙子"><input type="checkbox" class="dish-check" value="橙子" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">橙子 </span></label>
+<label class="dish-card" data-name="枇杷" data-dish="枇杷"><input type="checkbox" class="dish-check" value="枇杷" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">枇杷 </span></label>
+<label class="dish-card" data-name="香蕉" data-dish="香蕉"><input type="checkbox" class="dish-check" value="香蕉" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">香蕉 </span></label>
+<label class="dish-card" data-name="蓝莓" data-dish="蓝莓"><input type="checkbox" class="dish-check" value="蓝莓" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">蓝莓 </span></label>
+<label class="dish-card" data-name="哈密瓜" data-dish="哈密瓜"><input type="checkbox" class="dish-check" value="哈密瓜" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">哈密瓜 </span></label>
+<label class="dish-card" data-name="梨" data-dish="梨"><input type="checkbox" class="dish-check" value="梨" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">梨 </span></label>
+<label class="dish-card" data-name="荔枝" data-dish="荔枝"><input type="checkbox" class="dish-check" value="荔枝" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">荔枝 </span></label>
+<label class="dish-card" data-name="草莓" data-dish="草莓"><input type="checkbox" class="dish-check" value="草莓" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">草莓 </span></label>
+<label class="dish-card" data-name="樱桃" data-dish="樱桃"><input type="checkbox" class="dish-check" value="樱桃" data-category="水果" data-group="水果" data-note="" data-ingredients=""><span class="dish-name">樱桃 </span></label>
+</div></details>
+</section>
+<section class="menu-section" data-category="空气炸锅及快捷食品"><h2>空气炸锅及快捷食品</h2>
+<details class="group" open><summary>快捷食品 <span class="count">5</span></summary><div class="dish-grid">
+<label class="dish-card" data-name="冷冻烤肠" data-dish="冷冻烤肠"><input type="checkbox" class="dish-check" value="冷冻烤肠" data-category="空气炸锅及快捷食品" data-group="快捷食品" data-note="200℃ 6分钟，再180℃ 6分钟" data-ingredients=""><span class="dish-name">冷冻烤肠 </span><small>200℃ 6分钟，再180℃ 6分钟</small></label>
+<label class="dish-card" data-name="包浆豆腐" data-dish="包浆豆腐"><input type="checkbox" class="dish-check" value="包浆豆腐" data-category="空气炸锅及快捷食品" data-group="快捷食品" data-note="180℃ 12分钟" data-ingredients="豆腐"><span class="dish-name">包浆豆腐 </span><small>180℃ 12分钟</small></label>
+<label class="dish-card" data-name="大油边" data-dish="大油边"><input type="checkbox" class="dish-check" value="大油边" data-category="空气炸锅及快捷食品" data-group="快捷食品" data-note="180-200℃ 15-20分钟，中间撒料" data-ingredients=""><span class="dish-name">大油边 </span><small>180-200℃ 15-20分钟，中间撒料</small></label>
+<label class="dish-card" data-name="羊肉串" data-dish="羊肉串"><input type="checkbox" class="dish-check" value="羊肉串" data-category="空气炸锅及快捷食品" data-group="快捷食品" data-note="180℃ 9分钟" data-ingredients="羊肉"><span class="dish-name">羊肉串 </span><small>180℃ 9分钟</small></label>
+<label class="dish-card" data-name="冷冻欧包" data-dish="冷冻欧包"><input type="checkbox" class="dish-check" value="冷冻欧包" data-category="空气炸锅及快捷食品" data-group="快捷食品" data-note="喷水，160℃ 6分钟；不预热7分钟" data-ingredients=""><span class="dish-name">冷冻欧包 </span><small>喷水，160℃ 6分钟；不预热7分钟</small></label>
+</div></details>
+</section>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">菜品维护</h2>
+    <div class="manage-grid">
+      <input id="newDishName" placeholder="新增菜名，例如：酸汤肥牛">
+      <select id="newDishCategory">
+        <option>荤菜</option><option>素菜</option><option>汤或粥</option><option>主食</option><option>水果</option><option>空气炸锅及快捷食品</option>
+      </select>
+      <input id="newDishIngredients" placeholder="食材，用、分隔">
+    </div>
+    <div class="actions" style="margin-top:8px"><button class="success" id="addDishBtn">新增菜品</button></div>
+
+    <h3>做完后的反馈</h3>
+    <div class="feedback-row">
+      <select id="feedbackDish"></select>
+      <button class="success" id="favoriteBtn">好吃保留</button>
+      <button class="secondary" id="normalBtn">一般</button>
+      <button class="danger" id="deleteBtn">不好吃删除</button>
+    </div>
+    <div class="actions" style="margin-top:8px"><button class="secondary" id="restoreDeletedBtn">恢复已删除菜品</button></div>
+  </div>
+
+  <div class="output-grid">
+    <div class="card">
+      <h2 style="margin-top:0">采购清单</h2>
+      <textarea id="shoppingText" placeholder="点“生成采购与微信”后显示"></textarea>
+      <div class="actions"><button class="primary" data-copy="shoppingText">复制采购清单</button></div>
+    </div>
+    <div class="card">
+      <h2 style="margin-top:0">发给阿姨的微信</h2>
+      <textarea id="wechatText" placeholder="点“生成采购与微信”后显示"></textarea>
+      <div class="actions"><button class="primary" data-copy="wechatText">复制微信</button></div>
+    </div>
+  </div>
+</main>
 </div>
 
-<div class="grid2">
-<div class="card"><h2>已选菜单</h2><div id="selected">尚未选择</div></div>
-<div class="card"><h2>本周菜单</h2><div id="week"></div></div>
+<div class="sticky-actions">
+  <div class="wrap actions">
+    <button class="primary" id="generateBtn">生成采购与微信</button>
+    <button class="success" id="saveBtn">保存今日菜单</button>
+    <button class="secondary" id="shareBtn">分享菜单给 ChatGPT</button>
+    <button class="danger" id="clearBtn">清空勾选</button>
+  </div>
+  <div class="wrap share-note">分享按钮会生成带选菜结果的网址。选择 ChatGPT 分享，或把链接粘贴到当前聊天，我就能直接读取菜单继续处理。</div>
 </div>
-
-<div class="card"><h2>全部菜单</h2><div id="menu"></div></div>
-
-<div class="grid2">
-<div class="card"><h2>采购清单</h2><textarea id="shopping"></textarea><button onclick="copyText('shopping')">复制采购清单</button></div>
-<div class="card"><h2>发给阿姨的微信</h2><textarea id="wechat"></textarea><button onclick="copyText('wechat')">复制微信</button></div>
-</div>
-
-<div class="card">
-<h2>新增菜品</h2>
-<div class="controls"><input id="newName" placeholder="菜名"><select id="newCat"></select><input id="newSub" placeholder="子分类"><button onclick="addDish()">新增</button></div>
-</div>
-</div>
-
-<div class="stickybar"><div class="wrap actions">
-<button onclick="generate()">生成采购与微信</button>
-<button class="gray" onclick="saveDay()">保存到本周</button>
-<button class="red" onclick="clearAll()">清空勾选</button>
-</div></div>
 
 <script>
-let menu=JSON.parse(localStorage.getItem('familyMenuLibrary')||'null')||window.MENU_DATA;
-const prefs=window.PREFS, ingredients=window.INGREDIENTS;
-date.value=new Date().toISOString().slice(0,10);
+"use strict";
+(function() {
+  const $ = (id) => document.getElementById(id);
+  const builtInNames = ["红烧鸡翅", "红烧鸡爪", "炸鸡柳", "临沂炒鸡（村驴）", "可乐鸡翅", "黄焖鸡", "宫保鸡丁", "香菇滑鸡", "咖喱鸡", "鸡腿炖土豆", "鸡腿炖蘑菇", "白切鸡", "盐焗鸡", "糖醋排骨", "红烧排骨", "菠萝排骨", "话梅排骨", "豉汁排骨（村驴）", "豆角土豆炖排骨", "胡萝卜土豆炖排骨粉条", "梅酱猪排", "木须肉", "肉末豆腐", "蒜苔炒细肉丝", "茭白炒肉丝", "糖醋里脊", "锅包肉（村驴）", "回锅肉", "鱼香肉丝", "京酱肉丝", "肉末茄子", "肉末粉丝", "黄瓜拌猪肝", "拌猪肝", "四喜丸子", "珍珠丸子", "冬瓜丸子粉丝汤", "豆腐娃娃菜炖粉条（少量五花肉）", "扁豆五花肉焖面", "卤肉饭", "红烧肉", "梅菜扣肉", "蒜泥白肉", "胡萝卜炖牛肉", "西红柿炖牛尾骨", "土豆胡萝卜炖牛腩（村驴）", "清炖牛肋条", "牛肋条豆皮红薯粉", "卤牛腱子", "牛肉面", "葱烧肥牛饭", "番茄豆腐肥牛小白菜锅", "菠萝拌牛肉香菜", "黑椒牛柳", "洋葱炒牛肉", "金针菇肥牛", "三酱牛肉", "孜然羊肉", "葱爆羊肉", "羊肉葱花饼", "羊肉串", "羊肉汤", "羊骨白菜粉丝汤", "红烧桂鱼", "清蒸桂鱼", "噶鱼炖豆腐粉条", "红烧罗非鱼", "清蒸鳕鱼", "红烧鲈鱼", "清蒸鲈鱼", "黄花鱼", "多宝鱼", "芦笋白蘑菇炒虾仁", "番茄豆腐鲜虾煲", "宫保虾球（村驴）", "黄瓜鸡蛋炒虾仁", "丝瓜虾仁", "油焖大虾", "白灼虾", "丝瓜虾滑汤", "煎青椒虾滑胡萝卜", "冬笋炒腊肉", "芦笋炒腊肉", "苦瓜炒鸡蛋豆腐", "丝瓜炒鸡蛋", "西兰花西红柿炒鸡蛋", "胡萝卜洋葱炒鸡蛋", "西红柿炒鸡蛋", "黄瓜炒鸡蛋", "韭菜炒鸡蛋", "蒜黄炒鸡蛋", "青椒炒鸡蛋", "木耳胡萝卜炒鸡蛋", "白菜烧豆腐", "家常豆腐", "豆腐娃娃菜炖粉条（纯素版）", "蒜苔炒香干", "蒜苔炒豆干", "香菇豆腐", "包浆豆腐", "素生煎包馅", "风味茄子（村驴）", "地三鲜", "茄子土豆西红柿", "蒜蓉茄子", "红烧茄子", "尖椒土豆丝", "黄油煎口蘑", "蒜蓉黄油煎白蘑菇", "香菇青菜", "白蘑菇炒西兰花", "芦笋炒白蘑菇", "清炒西兰花", "清炒小白菜", "蒜蓉油麦菜", "清炒菠菜", "清炒生菜", "清炒芥蓝", "清炒空心菜", "芋艿小白菜", "白灼秋葵", "秋葵炒山药木耳", "清炒苦瓜", "清炒西葫芦", "蒸贝贝南瓜", "松仁玉米", "炸素丸子", "玉米青豆胡萝卜丁", "黄瓜花生米拌粉丝", "黄瓜丝拌粉丝花生米", "拍黄瓜", "黄瓜拌木耳", "糖拌西红柿", "凉拌藕片", "菠菜拌粉丝", "凉拌木耳", "凉拌腐竹", "凉拌三丝", "鸽子汤", "萝卜汤", "炖鸡汤（羊肚菌、虫草花）", "菠菜西红柿蛋花汤", "西红柿青菜山药疙瘩汤", "冬瓜丸子粉丝汤", "丝瓜虾滑汤", "丝瓜鱼丸汤", "牛尾汤", "清炖牛肋条汤", "羊骨白菜粉丝汤", "八宝粥", "小米粥", "白米粥", "南瓜小米粥", "山药小米粥", "米饭", "卤肉饭", "三文鱼焖饭", "鳕鱼炒饭", "芝士焗饭", "葱烧肥牛饭", "茄丁面", "炸酱面", "牛肉面", "番茄鸡蛋面", "扁豆五花肉焖面", "打卤面", "饺子-木耳/鸡蛋/胡萝卜/猪肉馅", "饺子-鸡蛋/胡萝卜/玉米/猪肉馅/木耳", "爆汁牛肉蒸饺（村驴）", "素生煎包", "馒头", "羊肉葱花饼", "花卷", "冷冻欧包", "苹果", "桃", "猕猴桃", "葡萄", "西瓜", "火龙果", "橙子", "枇杷", "香蕉", "蓝莓", "哈密瓜", "梨", "荔枝", "草莓", "樱桃", "冷冻烤肠", "包浆豆腐", "大油边", "羊肉串", "冷冻欧包"];
+  const kidFavs = new Set(["米饭", "肉末豆腐", "西红柿炒鸡蛋"]);
+  const dadFavs = new Set(["临沂炒鸡（村驴）", "回锅肉", "孜然羊肉", "宫保鸡丁", "尖椒土豆丝", "葱爆羊肉", "鱼香肉丝"]);
+  const momFavs = new Set(["卤牛腱子", "土豆胡萝卜炖牛腩（村驴）", "清炖牛肋条", "清炖牛肋条汤", "清蒸桂鱼", "清蒸鲈鱼", "清蒸鳕鱼", "炖鸡汤（羊肚菌、虫草花）", "牛尾汤", "牛肉面", "牛肋条豆皮红薯粉", "红烧桂鱼", "红烧鲈鱼", "胡萝卜炖牛肉", "萝卜汤", "西红柿炖牛尾骨", "西红柿青菜山药疙瘩汤", "鸽子汤"]);
+  const spicyDishes = new Set(["临沂炒鸡（村驴）", "回锅肉", "孜然羊肉", "宫保虾球（村驴）", "宫保鸡丁", "尖椒土豆丝", "葱爆羊肉", "风味茄子（村驴）", "鱼香肉丝"]);
+  const samItems = new Set(["排骨", "鸡翅", "鸡蛋"]);
+  const staples = ["大米", "面条/面粉", "食用油", "盐", "糖", "生抽", "老抽", "蚝油", "料酒", "醋", "淀粉", "番茄酱", "豆瓣酱", "黑胡椒", "葱姜蒜"];
 
-function renderMenu(){
- let h='';
- Object.entries(menu).forEach(([cat,subs])=>{
-  h+=`<section><h2>${cat}</h2><div class="groups">`;
-  Object.entries(subs).forEach(([sub,dishes])=>{
-   h+=`<div class="group"><h3>${sub}</h3>`;
-   dishes.forEach(d=>{
-    const tag=prefs[d]?`<span class="tag">${prefs[d]}</span>`:'';
-    h+=`<div class="dish" data-name="${d.toLowerCase()}"><input type="checkbox" class="pick" data-cat="${cat}" value="${d}"><label>${d} ${tag}</label></div>`;
-   });
-   h+='</div>';
-  });
-  h+='</div></section>';
- });
- menu.innerHTML=h;
- newCat.innerHTML=Object.keys(window.MENU_DATA).map(x=>`<option>${x}</option>`).join('');
- document.querySelectorAll('.pick').forEach(x=>x.addEventListener('change',updateSelected));
-}
-function picks(){return [...document.querySelectorAll('.pick:checked')].map(x=>({name:x.value,cat:x.dataset.cat}))}
-function updateSelected(){const p=picks();selected.innerHTML=p.length?`<ol>${p.map(x=>`<li>${x.name}</li>`).join('')}</ol>`:'尚未选择'}
-search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();document.querySelectorAll('.dish').forEach(x=>x.style.display=!q||x.dataset.name.includes(q)?'flex':'none')});
-function generate(){
- const p=picks();if(!p.length)return alert('请先勾选菜品');
- const buy=new Set();p.forEach(x=>(ingredients[x.name]||[]).forEach(i=>buy.add(i)));
- shopping.value='【本次购买】\n'+([ ...buy].map(x=>'□ '+x).join('\n')||'请按菜品和库存补充')+
- '\n\n【一般必备】\n□ 米\n□ 面\n□ 油\n□ 盐\n□ 糖\n□ 生抽\n□ 老抽\n□ 蚝油\n□ 料酒\n□ 醋\n□ 淀粉\n□ 葱姜蒜';
- let msg='早，今日食谱：\n'+p.map((x,i)=>`${i+1}. ${x.name}；`).join('\n')+`\n\n${lunch.value}。`;
- if(left.value!=='不需要留菜')msg+='\n'+left.value+'。';
- if(p.some(x=>x.cat==='水果'))msg+='\n\n水果清洗法：清洁液泡几分钟，用水冲洗几次，再用盐+淀粉泡半小时，用水冲干净。';
- const clean=[...document.querySelectorAll('.clean:checked')].map(x=>x.value);
- const ct={擦灰:'桌子擦擦灰，包括咖啡机，孩子写字台，台灯，化妆台，卧室的酒架子，梳妆台之类。',擦沙发:'好好擦擦沙发，把沙发上的东西都拿下来，旧沙发套放脏衣篓。',厨房打扫:'筷子笼洗洗，把勺子铲子等都取出来，清洗筷子笼子和下面架子，再擦干净。'};
- if(clean.length)msg+='\n\n另外：\n'+clean.map(x=>ct[x]).join('\n');
- wechat.value=msg;
-}
-function weekStart(ds){let d=new Date(ds+'T12:00:00'),day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.toISOString().slice(0,10)}
-function saveDay(){
- const ds=date.value,p=picks(),store=JSON.parse(localStorage.getItem('familyWeekMenus')||'{}'),wk=weekStart(ds);
- store[wk]=store[wk]||{};store[wk][ds]={items:p.map(x=>x.name),lunch:lunch.value};localStorage.setItem('familyWeekMenus',JSON.stringify(store));renderWeek();alert('已保存');
-}
-function renderWeek(){
- const wk=weekStart(date.value),store=JSON.parse(localStorage.getItem('familyWeekMenus')||'{}'),data=store[wk]||{},names=['周一','周二','周三','周四','周五','周六','周日'];
- let h='<table><tr><th>星期</th><th>菜单</th><th>带饭</th></tr>';
- for(let i=0;i<7;i++){let d=new Date(wk+'T12:00:00');d.setDate(d.getDate()+i);let k=d.toISOString().slice(0,10),r=data[k];h+=`<tr><td>${names[i]}</td><td>${r?r.items.join('、'):'-'}</td><td>${r?r.lunch:'-'}</td></tr>`}
- h+='</table>';const all=Object.values(data).flatMap(x=>x.items||[]);h+=`<p><b>肉末豆腐：</b>${all.includes('肉末豆腐')?'本周已安排':'本周尚未安排'}</p>`;week.innerHTML=h;
-}
-function clearAll(){document.querySelectorAll('.pick').forEach(x=>x.checked=false);updateSelected()}
-function copyText(id){const e=document.getElementById(id);e.select();navigator.clipboard.writeText(e.value).then(()=>alert('已复制'))}
-function addDish(){const n=newName.value.trim(),c=newCat.value,s=newSub.value.trim()||'其他';if(!n)return alert('请输入菜名');menu[c][s]=menu[c][s]||[];if(!menu[c][s].includes(n))menu[c][s].push(n);localStorage.setItem('familyMenuLibrary',JSON.stringify(menu));renderMenu();alert('已新增')}
-date.addEventListener('change',renderWeek);
-renderMenu();renderWeek();
+  const cleaningTexts = {
+    "擦灰":"桌子擦擦灰，包括咖啡机，孩子写字台，台灯，化妆台，卧室的酒架子，梳妆台之类。",
+    "擦沙发":"好好擦擦沙发，把沙发上的东西都拿下来，旧沙发套放脏衣篓。",
+    "厨房打扫":"筷子笼洗洗，把勺子铲子等都取出来，清洗筷子笼子和下面架子，再擦干净。"
+  };
+
+  let activeFilter = "全部";
+  const state = {
+    custom: JSON.parse(localStorage.getItem("fm_custom") || "[]"),
+    favorites: new Set(JSON.parse(localStorage.getItem("fm_favorites") || "[]")),
+    deleted: new Set(JSON.parse(localStorage.getItem("fm_deleted") || "[]"))
+  };
+
+  function todayLocal() {
+    const d = new Date();
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function allChecks() { return Array.from(document.querySelectorAll(".dish-check")); }
+  function selectedChecks() { return allChecks().filter(x => x.checked && !x.closest(".dish-card").classList.contains("deleted")); }
+  function selectedItems() {
+    return selectedChecks().map(x => ({
+      name:x.value, category:x.dataset.category, group:x.dataset.group,
+      note:x.dataset.note || "", ingredients:(x.dataset.ingredients || "").split("|").filter(Boolean)
+    }));
+  }
+
+  function renderCustom() {
+    const box = $("customDishes");
+    if (!state.custom.length) { box.style.display="none"; box.innerHTML=""; return; }
+    box.style.display="block";
+    box.innerHTML = `<h2 style="margin-top:0">我新增的菜</h2><div class="dish-grid">` +
+      state.custom.map((d,i) => `
+        <label class="dish-card custom-card ${state.deleted.has(d.name)?"deleted":""} ${state.favorites.has(d.name)?"favorite":""}" data-name="${escapeHtml(d.name.toLowerCase())}" data-dish="${escapeHtml(d.name)}">
+          <input type="checkbox" class="dish-check" value="${escapeHtml(d.name)}" data-category="${escapeHtml(d.category)}" data-group="自定义" data-note="" data-ingredients="${escapeHtml((d.ingredients||[]).join("|"))}">
+          <span class="dish-name">${state.favorites.has(d.name)?"⭐ ":""}${escapeHtml(d.name)} <span class="tag mom">自定义</span></span>
+        </label>`).join("") + `</div>`;
+    box.querySelectorAll(".dish-check").forEach(x => x.addEventListener("change", updateAll));
+  }
+
+  function escapeHtml(v) {
+    return String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+  }
+
+  function applyDishFlags() {
+    document.querySelectorAll(".dish-card").forEach(card => {
+      const name = card.dataset.dish;
+      card.classList.toggle("favorite", state.favorites.has(name));
+      card.classList.toggle("deleted", state.deleted.has(name));
+      const nameSpan = card.querySelector(".dish-name");
+      if (nameSpan && state.favorites.has(name) && !nameSpan.textContent.trim().startsWith("⭐")) {
+        nameSpan.insertAdjacentText("afterbegin","⭐ ");
+      }
+    });
+  }
+
+  function weekStart(dateStr) {
+    const d = new Date(dateStr+"T12:00:00");
+    const offset = (d.getDay()+6)%7;
+    d.setDate(d.getDate()-offset);
+    return d.toISOString().slice(0,10);
+  }
+
+  function weekStore() { return JSON.parse(localStorage.getItem("fm_week") || "{}"); }
+  function getWeekData() {
+    const store = weekStore();
+    return store[weekStart($("menuDate").value)] || {};
+  }
+
+  function renderWeek() {
+    const wk = weekStart($("menuDate").value);
+    const data = getWeekData();
+    const names = ["周一","周二","周三","周四","周五","周六","周日"];
+    let html = '<table class="week-table"><tr><th>星期</th><th>菜单</th></tr>';
+    let all = [];
+    for (let i=0;i<7;i++) {
+      const d = new Date(wk+"T12:00:00"); d.setDate(d.getDate()+i);
+      const key = d.toISOString().slice(0,10), rec = data[key];
+      const items = rec?.dishes || [];
+      all = all.concat(items);
+      html += `<tr><td>${names[i]}<br><span class="sub">${key.slice(5)}</span></td><td>${items.length?items.join("、"):"-"}</td></tr>`;
+    }
+    html += "</table>";
+    $("weekHistory").innerHTML = html;
+    $("tofuStatus").textContent = all.includes("肉末豆腐") ? "已安排" : "未安排";
+    $("kidStatus").textContent = all.filter(x=>kidFavs.has(x)).length;
+    $("dadStatus").textContent = all.filter(x=>dadFavs.has(x)||spicyDishes.has(x)).length;
+    $("momStatus").textContent = all.filter(x=>momFavs.has(x)).length;
+    updateDuplicateWarning();
+  }
+
+  function updateSelectedList() {
+    const items = selectedItems();
+    $("selectedList").innerHTML = items.length ? items.map(x=>`<li>${escapeHtml(x.name)}</li>`).join("") : "<li>尚未选择</li>";
+    const fb = $("feedbackDish");
+    const names = [...builtInNames, ...state.custom.map(x=>x.name)].filter(x=>!state.deleted.has(x));
+    fb.innerHTML = names.map(x=>`<option>${escapeHtml(x)}</option>`).join("");
+  }
+
+  function updateDuplicateWarning() {
+    const selected = selectedItems().map(x=>x.name);
+    const data = getWeekData();
+    const current = $("menuDate").value;
+    const prior = Object.entries(data).filter(([date])=>date<current).flatMap(([,r])=>r.dishes||[]);
+    const repeated = selected.filter(x=>prior.includes(x));
+    const el = $("duplicateWarning");
+    if (repeated.length) {
+      el.style.display="block";
+      el.textContent = "本周前面已经吃过："+[...new Set(repeated)].join("、");
+    } else {
+      el.style.display="none";
+      el.textContent="";
+    }
+  }
+
+  function updateAll() {
+    updateSelectedList();
+    updateDuplicateWarning();
+  }
+
+  function applyFilters() {
+    const q = $("searchBox").value.trim().toLowerCase();
+    document.querySelectorAll(".menu-section").forEach(section => {
+      const categoryMatches = activeFilter==="全部" || section.dataset.category===activeFilter;
+      let shown = 0;
+      section.querySelectorAll(".dish-card").forEach(card => {
+        const ok = categoryMatches && (!q || card.dataset.name.includes(q)) && !state.deleted.has(card.dataset.dish);
+        card.style.display = ok ? "flex" : "none";
+        if(ok) shown++;
+      });
+      section.style.display = shown ? "block" : "none";
+    });
+    document.querySelectorAll("#customDishes .dish-card").forEach(card => {
+      const check = card.querySelector(".dish-check");
+      const ok = (activeFilter==="全部" || check.dataset.category===activeFilter) && (!q || card.dataset.name.includes(q)) && !state.deleted.has(card.dataset.dish);
+      card.style.display = ok ? "flex" : "none";
+    });
+  }
+
+  function saveCurrentDay(showAlert=true) {
+    const date = $("menuDate").value;
+    const store = weekStore(), wk = weekStart(date);
+    store[wk] = store[wk] || {};
+    store[wk][date] = {
+      dishes:selectedItems().map(x=>x.name),
+      lunch:$("lunchBox").value,
+      leftover:$("leftover").value,
+      focus:$("focus").value,
+      cleaning:Array.from(document.querySelectorAll(".cleaning:checked")).map(x=>x.value),
+      note:$("extraNote").value
+    };
+    localStorage.setItem("fm_week", JSON.stringify(store));
+    renderWeek();
+    if(showAlert) alert("今日菜单已保存");
+  }
+
+  function loadCurrentDay() {
+    allChecks().forEach(x=>x.checked=false);
+    const data = getWeekData(), rec=data[$("menuDate").value];
+    if(rec) {
+      $("lunchBox").value=rec.lunch||"不带饭";
+      $("leftover").value=rec.leftover||"不需要留菜";
+      $("focus").value=rec.focus||"均衡安排";
+      $("extraNote").value=rec.note||"";
+      document.querySelectorAll(".cleaning").forEach(x=>x.checked=(rec.cleaning||[]).includes(x.value));
+      const names = new Set(rec.dishes||[]);
+      allChecks().forEach(x=>x.checked=names.has(x.value));
+    }
+    updateAll();
+  }
+
+  function generateOutputs() {
+    const items = selectedItems();
+    if(!items.length) { alert("请先勾选菜单"); return; }
+    const allIngredients = new Set(items.flatMap(x=>x.ingredients));
+    const sam = [...allIngredients].filter(x=>samItems.has(x));
+    const hema = [...allIngredients].filter(x=>!samItems.has(x) && !staples.includes(x));
+    const unknown = items.filter(x=>!x.ingredients.length).map(x=>x.name);
+
+    const d = new Date($("menuDate").value+"T12:00:00");
+    let shopping = "【本次购买｜盒马】\n" + (hema.length ? hema.map(x=>"□ "+x).join("\n") : "按家中库存补充");
+    shopping += "\n\n【山姆库存检查｜没了就买】\n" + (sam.length ? sam.map(x=>"□ "+x).join("\n") : "本次未涉及鸡蛋、排骨或鸡翅");
+    if(unknown.length) shopping += "\n\n【需按菜名确认食材】\n" + unknown.map(x=>"□ "+x).join("\n");
+    shopping += "\n\n【一般必备｜检查库存】\n" + staples.map(x=>"□ "+x).join("\n");
+    if(d.getDay()===1) {
+      shopping += "\n\n【盒马会员日提醒】\n周一全天下单可享折扣并周一送达；周一21:30-24:00下单也有折扣，可周二送达。周一和周二的菜肉可适当多买。";
+    }
+    $("shoppingText").value=shopping;
+
+    const dishLines = items.map((x,i)=>`${i+1}.${x.name}${x.note?"（"+x.note+"）":""}；`).join("\n");
+    let lunchText = $("lunchBox").value==="不带饭" ? "明天不带饭哈。" : ($("lunchBox").value==="带一份" ? "明天带一份饭哈。" : "明天带两份饭哈。");
+    let msg = "早，今日食谱：\n"+dishLines+"\n\n"+lunchText;
+    if($("leftover").value!=="不需要留菜") msg += "\n"+$("leftover").value+"。";
+    if(items.some(x=>x.category==="水果")) {
+      msg += "\n\n水果清洗法：清洁液泡几分钟，用水冲洗几次，再用盐+淀粉泡半小时，用水冲干净。";
+    }
+    const cleaning = Array.from(document.querySelectorAll(".cleaning:checked")).map(x=>x.value);
+    if(cleaning.length) msg += "\n\n另外：\n"+cleaning.map(x=>cleaningTexts[x]).join("\n");
+    if($("extraNote").value.trim()) msg += "\n\n"+$("extraNote").value.trim();
+    $("wechatText").value=msg;
+  }
+
+  async function copyText(id) {
+    const value=$(id).value;
+    if(!value) { alert("还没有内容"); return; }
+    try { await navigator.clipboard.writeText(value); alert("已复制"); }
+    catch(e) { const el=$(id); el.focus(); el.select(); document.execCommand("copy"); alert("已复制"); }
+  }
+
+  function buildShareURL() {
+    const u = new URL(window.location.href);
+    u.search = "";
+    u.searchParams.set("date",$("menuDate").value);
+    u.searchParams.set("lunch",$("lunchBox").value);
+    u.searchParams.set("left",$("leftover").value);
+    u.searchParams.set("focus",$("focus").value);
+    selectedItems().forEach(x=>u.searchParams.append("dish",x.name));
+    Array.from(document.querySelectorAll(".cleaning:checked")).forEach(x=>u.searchParams.append("clean",x.value));
+    if($("extraNote").value.trim()) u.searchParams.set("note",$("extraNote").value.trim());
+    return u.toString();
+  }
+
+  async function sharePlan() {
+    const items=selectedItems();
+    if(!items.length) { alert("请先勾选菜单"); return; }
+    saveCurrentDay(false);
+    const url=buildShareURL();
+    const text="我选好了菜单，请按这个链接继续生成采购和阿姨微信：";
+    if(navigator.share) {
+      try { await navigator.share({title:"家庭菜单",text,url}); return; } catch(e) { if(e.name==="AbortError") return; }
+    }
+    try { await navigator.clipboard.writeText(url); alert("菜单链接已复制，回到当前聊天粘贴发送即可"); }
+    catch(e) { prompt("复制这个菜单链接发到聊天：",url); }
+  }
+
+  function restoreFromURL() {
+    const p=new URLSearchParams(location.search);
+    const dishes=p.getAll("dish");
+    if(!dishes.length) return false;
+    $("menuDate").value=p.get("date")||todayLocal();
+    $("lunchBox").value=p.get("lunch")||"不带饭";
+    $("leftover").value=p.get("left")||"不需要留菜";
+    $("focus").value=p.get("focus")||"均衡安排";
+    $("extraNote").value=p.get("note")||"";
+    const names=new Set(dishes);
+    allChecks().forEach(x=>x.checked=names.has(x.value));
+    const cleans=new Set(p.getAll("clean"));
+    document.querySelectorAll(".cleaning").forEach(x=>x.checked=cleans.has(x.value));
+    updateAll();
+    generateOutputs();
+    return true;
+  }
+
+  function addDish() {
+    const name=$("newDishName").value.trim();
+    if(!name) { alert("请输入菜名"); return; }
+    if(builtInNames.includes(name)||state.custom.some(x=>x.name===name)) { alert("该菜已经存在"); return; }
+    const category=$("newDishCategory").value;
+    const ingredients=$("newDishIngredients").value.split(/[、,，]/).map(x=>x.trim()).filter(Boolean);
+    state.custom.push({name,category,ingredients});
+    localStorage.setItem("fm_custom",JSON.stringify(state.custom));
+    $("newDishName").value=""; $("newDishIngredients").value="";
+    renderCustom(); applyDishFlags(); updateAll(); applyFilters();
+    alert("新菜已加入");
+  }
+
+  function feedback(action) {
+    const name=$("feedbackDish").value;
+    if(!name) return;
+    if(action==="favorite") { state.favorites.add(name); state.deleted.delete(name); }
+    if(action==="normal") { state.favorites.delete(name); state.deleted.delete(name); }
+    if(action==="delete") { if(!confirm(`确定删除“不好吃”的菜：${name}？`)) return; state.deleted.add(name); state.favorites.delete(name); allChecks().filter(x=>x.value===name).forEach(x=>x.checked=false); }
+    localStorage.setItem("fm_favorites",JSON.stringify([...state.favorites]));
+    localStorage.setItem("fm_deleted",JSON.stringify([...state.deleted]));
+    renderCustom(); applyDishFlags(); updateAll(); applyFilters();
+  }
+
+  // Init
+  $("menuDate").value=todayLocal();
+  renderCustom(); applyDishFlags();
+  allChecks().forEach(x=>x.addEventListener("change",updateAll));
+  document.querySelectorAll(".filterbtn").forEach(btn=>btn.addEventListener("click",()=>{
+    activeFilter=btn.dataset.filter;
+    document.querySelectorAll(".filterbtn").forEach(x=>x.classList.toggle("active",x===btn));
+    applyFilters();
+  }));
+  $("searchBox").addEventListener("input",applyFilters);
+  $("menuDate").addEventListener("change",()=>{renderWeek();loadCurrentDay();});
+  $("generateBtn").addEventListener("click",generateOutputs);
+  $("saveBtn").addEventListener("click",()=>saveCurrentDay(true));
+  $("shareBtn").addEventListener("click",sharePlan);
+  $("clearBtn").addEventListener("click",()=>{allChecks().forEach(x=>x.checked=false);updateAll();});
+  $("addDishBtn").addEventListener("click",addDish);
+  $("favoriteBtn").addEventListener("click",()=>feedback("favorite"));
+  $("normalBtn").addEventListener("click",()=>feedback("normal"));
+  $("deleteBtn").addEventListener("click",()=>feedback("delete"));
+  $("restoreDeletedBtn").addEventListener("click",()=>{state.deleted.clear();localStorage.setItem("fm_deleted","[]");renderCustom();applyDishFlags();applyFilters();alert("已恢复");});
+  document.querySelectorAll("[data-copy]").forEach(btn=>btn.addEventListener("click",()=>copyText(btn.dataset.copy)));
+
+  renderWeek();
+  if(!restoreFromURL()) loadCurrentDay();
+  updateSelectedList();
+  applyFilters();
+})();
 </script>
-</body></html>
+</body>
+</html>
