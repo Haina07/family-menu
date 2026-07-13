@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>家庭菜单管理中心</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--line:#e5e7eb;--blue:#2563eb;--text:#1f2937}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--text)}
+header{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--line);padding:14px}.wrap{max-width:1280px;margin:auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+h1{font-size:22px;margin:0 0 5px}h2{font-size:19px}h3{font-size:16px;margin:0 0 8px}
+.controls,.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.group{border:1px solid var(--line);border-radius:12px;padding:10px}.dish{display:flex;gap:8px;padding:7px 0;border-bottom:1px dashed #eee}.dish input{width:22px;height:22px}.dish label{flex:1}
+.tag{font-size:11px;background:#fef3c7;padding:2px 6px;border-radius:99px}
+input,select,textarea,button{font:inherit}input[type=date],input[type=text],select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:9px}
+textarea{min-height:180px}button{padding:10px 14px;border:0;border-radius:9px;background:var(--blue);color:white;font-weight:700}.gray{background:#e5e7eb;color:#111}.red{background:#fee2e2;color:#991b1b}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.stickybar{position:sticky;bottom:0;background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:10px;z-index:8}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid var(--line);padding:7px;vertical-align:top}
+@media(max-width:900px){.groups,.controls,.grid2{grid-template-columns:1fr}}
+</style>
+<script src="data.js"></script>
+</head>
+<body>
+<header><div class="wrap"><h1>家庭菜单管理中心</h1><div>点菜、保存本周菜单、生成采购清单和阿姨微信</div></div></header>
+<div class="wrap">
+<div class="card">
+<h2>日期与设置</h2>
+<div class="controls">
+<label>日期<input type="date" id="date"></label>
+<label>是否带饭<select id="lunch"><option>不带饭</option><option>带一份</option><option>带两份</option></select></label>
+<label>是否留菜<select id="left"><option>不需要留菜</option><option>留一份到第二天</option><option>多做一些</option></select></label>
+<label>口味重点<select id="focus"><option>均衡安排</option><option>孩子</option><option>爸爸</option><option>妈妈</option></select></label>
+</div>
+<p><input id="search" type="text" placeholder="搜索菜名，例如：牛肉、鸡蛋、汤"></p>
+<label><input type="checkbox" class="clean" value="擦灰"> 擦灰</label>
+<label><input type="checkbox" class="clean" value="擦沙发"> 擦沙发</label>
+<label><input type="checkbox" class="clean" value="厨房打扫"> 厨房打扫</label>
+</div>
+
+<div class="grid2">
+<div class="card"><h2>已选菜单</h2><div id="selected">尚未选择</div></div>
+<div class="card"><h2>本周菜单</h2><div id="week"></div></div>
+</div>
+
+<div class="card"><h2>全部菜单</h2><div id="menu"></div></div>
+
+<div class="grid2">
+<div class="card"><h2>采购清单</h2><textarea id="shopping"></textarea><button onclick="copyText('shopping')">复制采购清单</button></div>
+<div class="card"><h2>发给阿姨的微信</h2><textarea id="wechat"></textarea><button onclick="copyText('wechat')">复制微信</button></div>
+</div>
+
+<div class="card">
+<h2>新增菜品</h2>
+<div class="controls"><input id="newName" placeholder="菜名"><select id="newCat"></select><input id="newSub" placeholder="子分类"><button onclick="addDish()">新增</button></div>
+</div>
+</div>
+
+<div class="stickybar"><div class="wrap actions">
+<button onclick="generate()">生成采购与微信</button>
+<button class="gray" onclick="saveDay()">保存到本周</button>
+<button class="red" onclick="clearAll()">清空勾选</button>
+</div></div>
+
+<script>
+let menu=JSON.parse(localStorage.getItem('familyMenuLibrary')||'null')||window.MENU_DATA;
+const prefs=window.PREFS, ingredients=window.INGREDIENTS;
+date.value=new Date().toISOString().slice(0,10);
+
+function renderMenu(){
+ let h='';
+ Object.entries(menu).forEach(([cat,subs])=>{
+  h+=`<section><h2>${cat}</h2><div class="groups">`;
+  Object.entries(subs).forEach(([sub,dishes])=>{
+   h+=`<div class="group"><h3>${sub}</h3>`;
+   dishes.forEach(d=>{
+    const tag=prefs[d]?`<span class="tag">${prefs[d]}</span>`:'';
+    h+=`<div class="dish" data-name="${d.toLowerCase()}"><input type="checkbox" class="pick" data-cat="${cat}" value="${d}"><label>${d} ${tag}</label></div>`;
+   });
+   h+='</div>';
+  });
+  h+='</div></section>';
+ });
+ menu.innerHTML=h;
+ newCat.innerHTML=Object.keys(window.MENU_DATA).map(x=>`<option>${x}</option>`).join('');
+ document.querySelectorAll('.pick').forEach(x=>x.addEventListener('change',updateSelected));
+}
+function picks(){return [...document.querySelectorAll('.pick:checked')].map(x=>({name:x.value,cat:x.dataset.cat}))}
+function updateSelected(){const p=picks();selected.innerHTML=p.length?`<ol>${p.map(x=>`<li>${x.name}</li>`).join('')}</ol>`:'尚未选择'}
+search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();document.querySelectorAll('.dish').forEach(x=>x.style.display=!q||x.dataset.name.includes(q)?'flex':'none')});
+function generate(){
+ const p=picks();if(!p.length)return alert('请先勾选菜品');
+ const buy=new Set();p.forEach(x=>(ingredients[x.name]||[]).forEach(i=>buy.add(i)));
+ shopping.value='【本次购买】\n'+([ ...buy].map(x=>'□ '+x).join('\n')||'请按菜品和库存补充')+
+ '\n\n【一般必备】\n□ 米\n□ 面\n□ 油\n□ 盐\n□ 糖\n□ 生抽\n□ 老抽\n□ 蚝油\n□ 料酒\n□ 醋\n□ 淀粉\n□ 葱姜蒜';
+ let msg='早，今日食谱：\n'+p.map((x,i)=>`${i+1}. ${x.name}；`).join('\n')+`\n\n${lunch.value}。`;
+ if(left.value!=='不需要留菜')msg+='\n'+left.value+'。';
+ if(p.some(x=>x.cat==='水果'))msg+='\n\n水果清洗法：清洁液泡几分钟，用水冲洗几次，再用盐+淀粉泡半小时，用水冲干净。';
+ const clean=[...document.querySelectorAll('.clean:checked')].map(x=>x.value);
+ const ct={擦灰:'桌子擦擦灰，包括咖啡机，孩子写字台，台灯，化妆台，卧室的酒架子，梳妆台之类。',擦沙发:'好好擦擦沙发，把沙发上的东西都拿下来，旧沙发套放脏衣篓。',厨房打扫:'筷子笼洗洗，把勺子铲子等都取出来，清洗筷子笼子和下面架子，再擦干净。'};
+ if(clean.length)msg+='\n\n另外：\n'+clean.map(x=>ct[x]).join('\n');
+ wechat.value=msg;
+}
+function weekStart(ds){let d=new Date(ds+'T12:00:00'),day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.toISOString().slice(0,10)}
+function saveDay(){
+ const ds=date.value,p=picks(),store=JSON.parse(localStorage.getItem('familyWeekMenus')||'{}'),wk=weekStart(ds);
+ store[wk]=store[wk]||{};store[wk][ds]={items:p.map(x=>x.name),lunch:lunch.value};localStorage.setItem('familyWeekMenus',JSON.stringify(store));renderWeek();alert('已保存');
+}
+function renderWeek(){
+ const wk=weekStart(date.value),store=JSON.parse(localStorage.getItem('familyWeekMenus')||'{}'),data=store[wk]||{},names=['周一','周二','周三','周四','周五','周六','周日'];
+ let h='<table><tr><th>星期</th><th>菜单</th><th>带饭</th></tr>';
+ for(let i=0;i<7;i++){let d=new Date(wk+'T12:00:00');d.setDate(d.getDate()+i);let k=d.toISOString().slice(0,10),r=data[k];h+=`<tr><td>${names[i]}</td><td>${r?r.items.join('、'):'-'}</td><td>${r?r.lunch:'-'}</td></tr>`}
+ h+='</table>';const all=Object.values(data).flatMap(x=>x.items||[]);h+=`<p><b>肉末豆腐：</b>${all.includes('肉末豆腐')?'本周已安排':'本周尚未安排'}</p>`;week.innerHTML=h;
+}
+function clearAll(){document.querySelectorAll('.pick').forEach(x=>x.checked=false);updateSelected()}
+function copyText(id){const e=document.getElementById(id);e.select();navigator.clipboard.writeText(e.value).then(()=>alert('已复制'))}
+function addDish(){const n=newName.value.trim(),c=newCat.value,s=newSub.value.trim()||'其他';if(!n)return alert('请输入菜名');menu[c][s]=menu[c][s]||[];if(!menu[c][s].includes(n))menu[c][s].push(n);localStorage.setItem('familyMenuLibrary',JSON.stringify(menu));renderMenu();alert('已新增')}
+date.addEventListener('change',renderWeek);
+renderMenu();renderWeek();
+</script>
+</body></html>
