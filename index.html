@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2563eb">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <title>家庭菜单管理中心</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--line:#e5e7eb;--text:#1f2937;--muted:#6b7280;--blue:#2563eb;--blue2:#eff6ff;--red:#b91c1c;--green:#047857;}
@@ -31,12 +32,23 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 .output-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px} .sticky-actions{position:sticky;bottom:0;z-index:25;background:rgba(245,246,248,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom))}
 .manage-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px} .feedback-row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center}
 .share-note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}
+.fruit-row{display:grid;grid-template-columns:minmax(80px,auto) 1fr;gap:8px;align-items:center;margin:3px 0}
+.fruit-row select,.fruit-row input{padding:7px 9px;font-size:13px;min-width:0;width:100%;border:1px solid #cfd4dc;border-radius:8px;background:#fff}
+.fruit-fixed{font-size:12px;line-height:1.45;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:7px 9px}
+.salary-box{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:11px}
+.salary-head{display:flex;justify-content:space-between;align-items:end;gap:8px}
+.salary-count{font-size:24px;font-weight:800}.salary-count small{font-size:13px;color:var(--muted);font-weight:500}
+.salary-progress{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin:9px 0}
+.salary-progress span{display:block;height:100%;background:#2563eb;width:0;transition:width .25s}
+.salary-message{font-size:13px;line-height:1.5;color:var(--muted)}
+.salary-due{background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:9px;padding:9px;margin-top:9px;font-weight:700;display:none}
+
 @media(max-width:980px){.layout{grid-template-columns:1fr}.sidebar{position:static;max-height:none}.dish-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.wrap{padding:10px}.controls,.output-grid,.manage-grid{grid-template-columns:1fr}.dish-grid{grid-template-columns:1fr}.feedback-row{grid-template-columns:1fr 1fr}.feedback-row select{grid-column:1/-1}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>家庭菜单管理中心</h1><div class="sub">Final V1｜完整菜单、直接点菜、本周去重、采购清单、阿姨微信和分享链接</div></div></header>
+<header><div class="wrap"><h1>家庭菜单管理中心</h1><div class="sub">Final V3｜水果数量选择、22天工资结算、完整菜单、本周去重、采购和阿姨微信</div></div></header>
 
 <div class="wrap layout">
 <aside class="sidebar">
@@ -65,6 +77,24 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
       <div class="status">孩子偏好<b id="kidStatus">0</b></div>
       <div class="status">爸爸辣菜<b id="dadStatus">0</b></div>
       <div class="status">妈妈牛肉/鱼/汤<b id="momStatus">0</b></div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h2 style="margin-top:0">阿姨工资结算</h2>
+    <div class="salary-box">
+      <div class="salary-head">
+        <div class="salary-count"><span id="salaryCount">5</span><small> / 22天</small></div>
+        <div class="sub" id="salaryRemaining">还差17天</div>
+      </div>
+      <div class="salary-progress"><span id="salaryProgress"></span></div>
+      <div class="salary-message">每保存一个新的菜单日期，计为1个做工日。同一日期重复保存不会重复计数。</div>
+      <div id="salaryDue" class="salary-due">已满22天，请给阿姨结工资。</div>
+      <div class="actions" style="margin-top:9px">
+        <button class="secondary" id="salaryAdjustBtn">修正天数</button>
+        <button class="success" id="salaryPaidBtn">已结工资，开始新周期</button>
+      </div>
     </div>
   </div>
 
@@ -219,7 +249,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 <label class="dish-card" data-name="素生煎包馅" data-dish="素生煎包馅"><input type="checkbox" class="dish-check" value="素生煎包馅" data-category="素菜" data-group="热菜｜豆腐、豆制品类" data-note="" data-ingredients=""><span class="dish-name">素生煎包馅 </span></label>
 </div></details>
 <details class="group" open><summary>热菜｜茄子、土豆类 <span class="count">6</span></summary><div class="dish-grid">
-<label class="dish-card" data-name="风味茄子（村驴）" data-dish="风味茄子（村驴）"><input type="checkbox" class="dish-check" value="风味茄子（村驴）" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">风味茄子（村驴） <span class="tag spicy">辣菜</span></span></label>
+<label class="dish-card" data-name="风味茄子（村驴）" data-dish="风味茄子（村驴）"><input type="checkbox" class="dish-check" value="风味茄子（村驴）" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">风味茄子（村驴） </span></label>
 <label class="dish-card" data-name="地三鲜" data-dish="地三鲜"><input type="checkbox" class="dish-check" value="地三鲜" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="青椒|土豆|胡萝卜"><span class="dish-name">地三鲜 </span></label>
 <label class="dish-card" data-name="茄子土豆西红柿" data-dish="茄子土豆西红柿"><input type="checkbox" class="dish-check" value="茄子土豆西红柿" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子|土豆|西红柿"><span class="dish-name">茄子土豆西红柿 </span></label>
 <label class="dish-card" data-name="蒜蓉茄子" data-dish="蒜蓉茄子"><input type="checkbox" class="dish-check" value="蒜蓉茄子" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">蒜蓉茄子 </span></label>
@@ -402,9 +432,29 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   const kidFavs = new Set(["米饭", "肉末豆腐", "西红柿炒鸡蛋"]);
   const dadFavs = new Set(["临沂炒鸡（村驴）", "回锅肉", "孜然羊肉", "宫保鸡丁", "尖椒土豆丝", "葱爆羊肉", "鱼香肉丝"]);
   const momFavs = new Set(["卤牛腱子", "土豆胡萝卜炖牛腩（村驴）", "清炖牛肋条", "清炖牛肋条汤", "清蒸桂鱼", "清蒸鲈鱼", "清蒸鳕鱼", "炖鸡汤（羊肚菌、虫草花）", "牛尾汤", "牛肉面", "牛肋条豆皮红薯粉", "红烧桂鱼", "红烧鲈鱼", "胡萝卜炖牛肉", "萝卜汤", "西红柿炖牛尾骨", "西红柿青菜山药疙瘩汤", "鸽子汤"]);
-  const spicyDishes = new Set(["临沂炒鸡（村驴）", "回锅肉", "孜然羊肉", "宫保虾球（村驴）", "宫保鸡丁", "尖椒土豆丝", "葱爆羊肉", "风味茄子（村驴）", "鱼香肉丝"]);
+  const spicyDishes = new Set(["临沂炒鸡（村驴）", "回锅肉", "孜然羊肉", "宫保虾球（村驴）", "宫保鸡丁", "尖椒土豆丝", "葱爆羊肉", "鱼香肉丝"]);
   const samItems = new Set(["排骨", "鸡翅", "鸡蛋"]);
   const staples = ["大米", "面条/面粉", "食用油", "盐", "糖", "生抽", "老抽", "蚝油", "料酒", "醋", "淀粉", "番茄酱", "豆瓣酱", "黑胡椒", "葱姜蒜"];
+
+  const watermelonFixed = "1个（一半切片我和娃吃，一半冷藏爸爸吃）";
+  const fruitOptionGroups = {
+    "苹果":["1个","2个","3个","4个","5个","6个"],
+    "桃":["1个","2个","3个","4个","5个","6个"],
+    "猕猴桃":["1个","2个","3个","4个","5个","6个"],
+    "火龙果":["半个","1个","2个"],
+    "橙子":["1个","2个","3个","4个","5个","6个"],
+    "枇杷":["1个","2个","3个","4个","5个","6个"],
+    "香蕉":["1个","2个","3个","4个","5个","6个"],
+    "梨":["1个","2个","3个","4个"],
+    "哈密瓜":["半个","1个","1份","2份"],
+    "葡萄":["洗一半","1份","2份","1盒","2盒"],
+    "蓝莓":["1盒","2盒","1份"],
+    "荔枝":["1份","2份","1盒","2盒"],
+    "草莓":["1盒","2盒","1份"],
+    "樱桃":["1盒","2盒","1份"]
+  };
+  const salaryInitial = {baseDate:"2026-07-14",baseCount:5,countedDates:[],alerted:false};
+  let fruitQuantities = {};
 
   const cleaningTexts = {
     "擦灰":"桌子擦擦灰，包括咖啡机，孩子写字台，台灯，化妆台，卧室的酒架子，梳妆台之类。",
@@ -427,11 +477,31 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 
   function allChecks() { return Array.from(document.querySelectorAll(".dish-check")); }
   function selectedChecks() { return allChecks().filter(x => x.checked && !x.closest(".dish-card").classList.contains("deleted")); }
+  function fruitOptions(name) {
+    return fruitOptionGroups[name] || ["1个","2个","3个","1份","2份","1盒","2盒"];
+  }
+
   function selectedItems() {
-    return selectedChecks().map(x => ({
-      name:x.value, category:x.dataset.category, group:x.dataset.group,
-      note:x.dataset.note || "", ingredients:(x.dataset.ingredients || "").split("|").filter(Boolean)
-    }));
+    return selectedChecks().map(x => {
+      const isFruit = x.dataset.category === "水果";
+      if (isFruit && x.value === "西瓜") fruitQuantities[x.value] = watermelonFixed;
+      return {
+        name:x.value, category:x.dataset.category, group:x.dataset.group,
+        note:x.dataset.note || "", ingredients:(x.dataset.ingredients || "").split("|").filter(Boolean),
+        fruitQuantity:isFruit ? (fruitQuantities[x.value] || "") : ""
+      };
+    });
+  }
+
+  function validateFruitQuantities(items, showAlert=true) {
+    const missing = items
+      .filter(x=>x.category==="水果" && x.name!=="西瓜" && !String(x.fruitQuantity||"").trim())
+      .map(x=>x.name);
+    if (missing.length) {
+      if(showAlert) alert("请选择水果数量："+missing.join("、"));
+      return false;
+    }
+    return true;
   }
 
   function renderCustom() {
@@ -471,6 +541,74 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   }
 
   function weekStore() { return JSON.parse(localStorage.getItem("fm_week") || "{}"); }
+
+  function getSalaryState() {
+    let s = JSON.parse(localStorage.getItem("fm_salary") || "null");
+    if (!s) {
+      s = {...salaryInitial};
+      localStorage.setItem("fm_salary", JSON.stringify(s));
+    }
+    s.countedDates = Array.from(new Set(s.countedDates || []));
+    return s;
+  }
+
+  function salaryTotal(s=getSalaryState()) {
+    return Number(s.baseCount || 0) + (s.countedDates || []).length;
+  }
+
+  function saveSalaryState(s) {
+    localStorage.setItem("fm_salary", JSON.stringify(s));
+  }
+
+  function renderSalary() {
+    const s = getSalaryState();
+    const count = salaryTotal(s);
+    $("salaryCount").textContent = count;
+    $("salaryRemaining").textContent = count >= 22 ? "本周期已满" : `还差${22-count}天`;
+    $("salaryProgress").style.width = Math.min(100, count/22*100) + "%";
+    $("salaryDue").style.display = count >= 22 ? "block" : "none";
+  }
+
+  function registerSalaryMenuDay(date) {
+    const s = getSalaryState();
+    if (date > s.baseDate && !s.countedDates.includes(date)) {
+      s.countedDates.push(date);
+      s.countedDates.sort();
+    }
+    const count = salaryTotal(s);
+    if (count >= 22 && !s.alerted) {
+      s.alerted = true;
+      saveSalaryState(s);
+      renderSalary();
+      alert("已满22个做工日，请给阿姨结工资。");
+      return;
+    }
+    saveSalaryState(s);
+    renderSalary();
+  }
+
+  function adjustSalaryCount() {
+    const current = salaryTotal();
+    const value = prompt("请输入本结算周期已做工天数（0-22）：", String(current));
+    if (value === null) return;
+    const n = Number(value);
+    if (!Number.isInteger(n) || n < 0 || n > 22) {
+      alert("请输入0到22之间的整数");
+      return;
+    }
+    const s = {baseDate:todayLocal(),baseCount:n,countedDates:[],alerted:n>=22};
+    saveSalaryState(s);
+    renderSalary();
+  }
+
+  function startNewSalaryCycle() {
+    if (!confirm("确认已经给阿姨结清工资，并从0天开始新周期？")) return;
+    const s = {baseDate:$("menuDate").value || todayLocal(),baseCount:0,countedDates:[],alerted:false};
+    saveSalaryState(s);
+    renderSalary();
+    alert("新的22天结算周期已开始");
+  }
+
   function getWeekData() {
     const store = weekStore();
     return store[weekStart($("menuDate").value)] || {};
@@ -486,8 +624,10 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
       const d = new Date(wk+"T12:00:00"); d.setDate(d.getDate()+i);
       const key = d.toISOString().slice(0,10), rec = data[key];
       const items = rec?.dishes || [];
+      const fruitMap = rec?.fruitQuantities || {};
       all = all.concat(items);
-      html += `<tr><td>${names[i]}<br><span class="sub">${key.slice(5)}</span></td><td>${items.length?items.join("、"):"-"}</td></tr>`;
+      const displayItems = items.map(name => fruitMap[name] ? name + fruitMap[name] : name);
+      html += `<tr><td>${names[i]}<br><span class="sub">${key.slice(5)}</span></td><td>${displayItems.length?displayItems.join("、"):"-"}</td></tr>`;
     }
     html += "</table>";
     $("weekHistory").innerHTML = html;
@@ -500,7 +640,26 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 
   function updateSelectedList() {
     const items = selectedItems();
-    $("selectedList").innerHTML = items.length ? items.map(x=>`<li>${escapeHtml(x.name)}</li>`).join("") : "<li>尚未选择</li>";
+    $("selectedList").innerHTML = items.length ? items.map(x => {
+      if (x.category !== "水果") return `<li>${escapeHtml(x.name)}</li>`;
+      if (x.name === "西瓜") {
+        fruitQuantities[x.name] = watermelonFixed;
+        return `<li><div class="fruit-row"><span>${escapeHtml(x.name)}</span><div class="fruit-fixed">${escapeHtml(watermelonFixed)}</div></div></li>`;
+      }
+      const options = fruitOptions(x.name);
+      const optionHtml = [
+        `<option value="">请选择数量</option>`,
+        ...options.map(v=>`<option value="${escapeHtml(v)}" ${x.fruitQuantity===v?"selected":""}>${escapeHtml(v)}</option>`)
+      ].join("");
+      return `<li><div class="fruit-row"><span>${escapeHtml(x.name)}</span><select class="fruit-qty-select" data-fruit="${escapeHtml(x.name)}" aria-label="${escapeHtml(x.name)}数量">${optionHtml}</select></div></li>`;
+    }).join("") : "<li>尚未选择</li>";
+
+    document.querySelectorAll(".fruit-qty-select").forEach(select => {
+      select.addEventListener("change", () => {
+        fruitQuantities[select.dataset.fruit] = select.value;
+      });
+    });
+
     const fb = $("feedbackDish");
     const names = [...builtInNames, ...state.custom.map(x=>x.name)].filter(x=>!state.deleted.has(x));
     fb.innerHTML = names.map(x=>`<option>${escapeHtml(x)}</option>`).join("");
@@ -548,10 +707,17 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 
   function saveCurrentDay(showAlert=true) {
     const date = $("menuDate").value;
+    const items = selectedItems();
+    if (!items.length) {
+      alert("请先勾选菜单");
+      return;
+    }
+    if (!validateFruitQuantities(items)) return;
     const store = weekStore(), wk = weekStart(date);
     store[wk] = store[wk] || {};
     store[wk][date] = {
-      dishes:selectedItems().map(x=>x.name),
+      dishes:items.map(x=>x.name),
+      fruitQuantities:Object.fromEntries(items.filter(x=>x.category==="水果").map(x=>[x.name,x.fruitQuantity])),
       lunch:$("lunchBox").value,
       leftover:$("leftover").value,
       focus:$("focus").value,
@@ -559,21 +725,31 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
       note:$("extraNote").value
     };
     localStorage.setItem("fm_week", JSON.stringify(store));
+    registerSalaryMenuDay(date);
     renderWeek();
     if(showAlert) alert("今日菜单已保存");
   }
 
   function loadCurrentDay() {
     allChecks().forEach(x=>x.checked=false);
+    fruitQuantities = {};
     const data = getWeekData(), rec=data[$("menuDate").value];
     if(rec) {
       $("lunchBox").value=rec.lunch||"不带饭";
       $("leftover").value=rec.leftover||"不需要留菜";
       $("focus").value=rec.focus||"均衡安排";
       $("extraNote").value=rec.note||"";
+      fruitQuantities = {...(rec.fruitQuantities || {})};
+      if((rec.dishes||[]).includes("西瓜")) fruitQuantities["西瓜"] = watermelonFixed;
       document.querySelectorAll(".cleaning").forEach(x=>x.checked=(rec.cleaning||[]).includes(x.value));
       const names = new Set(rec.dishes||[]);
       allChecks().forEach(x=>x.checked=names.has(x.value));
+    } else {
+      $("lunchBox").value="不带饭";
+      $("leftover").value="不需要留菜";
+      $("focus").value="均衡安排";
+      $("extraNote").value="";
+      document.querySelectorAll(".cleaning").forEach(x=>x.checked=false);
     }
     updateAll();
   }
@@ -581,13 +757,19 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   function generateOutputs() {
     const items = selectedItems();
     if(!items.length) { alert("请先勾选菜单"); return; }
-    const allIngredients = new Set(items.flatMap(x=>x.ingredients));
+    if(!validateFruitQuantities(items)) return;
+
+    const fruits = items.filter(x=>x.category==="水果");
+    const nonFruits = items.filter(x=>x.category!=="水果");
+    const allIngredients = new Set(nonFruits.flatMap(x=>x.ingredients));
     const sam = [...allIngredients].filter(x=>samItems.has(x));
     const hema = [...allIngredients].filter(x=>!samItems.has(x) && !staples.includes(x));
-    const unknown = items.filter(x=>!x.ingredients.length).map(x=>x.name);
+    const fruitShopping = fruits.map(x=>x.name + x.fruitQuantity);
+    const unknown = nonFruits.filter(x=>!x.ingredients.length).map(x=>x.name);
 
     const d = new Date($("menuDate").value+"T12:00:00");
-    let shopping = "【本次购买｜盒马】\n" + (hema.length ? hema.map(x=>"□ "+x).join("\n") : "按家中库存补充");
+    const hemaLines = [...hema.map(x=>"□ "+x), ...fruitShopping.map(x=>"□ "+x)];
+    let shopping = "【本次购买｜盒马】\n" + (hemaLines.length ? hemaLines.join("\n") : "按家中库存补充");
     shopping += "\n\n【山姆库存检查｜没了就买】\n" + (sam.length ? sam.map(x=>"□ "+x).join("\n") : "本次未涉及鸡蛋、排骨或鸡翅");
     if(unknown.length) shopping += "\n\n【需按菜名确认食材】\n" + unknown.map(x=>"□ "+x).join("\n");
     shopping += "\n\n【一般必备｜检查库存】\n" + staples.map(x=>"□ "+x).join("\n");
@@ -596,11 +778,14 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     }
     $("shoppingText").value=shopping;
 
-    const dishLines = items.map((x,i)=>`${i+1}.${x.name}${x.note?"（"+x.note+"）":""}；`).join("\n");
+    const dishLines = items.map((x,i)=>{
+      const displayName = x.category==="水果" ? x.name+x.fruitQuantity : x.name;
+      return `${i+1}.${displayName}${x.note?"（"+x.note+"）":""}；`;
+    }).join("\n");
     let lunchText = $("lunchBox").value==="不带饭" ? "明天不带饭哈。" : ($("lunchBox").value==="带一份" ? "明天带一份饭哈。" : "明天带两份饭哈。");
     let msg = "早，今日食谱：\n"+dishLines+"\n\n"+lunchText;
     if($("leftover").value!=="不需要留菜") msg += "\n"+$("leftover").value+"。";
-    if(items.some(x=>x.category==="水果")) {
+    if(fruits.length) {
       msg += "\n\n水果清洗法：清洁液泡几分钟，用水冲洗几次，再用盐+淀粉泡半小时，用水冲干净。";
     }
     const cleaning = Array.from(document.querySelectorAll(".cleaning:checked")).map(x=>x.value);
@@ -623,7 +808,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     u.searchParams.set("lunch",$("lunchBox").value);
     u.searchParams.set("left",$("leftover").value);
     u.searchParams.set("focus",$("focus").value);
-    selectedItems().forEach(x=>u.searchParams.append("dish",x.name));
+    selectedItems().forEach(x=>{u.searchParams.append("dish",x.name); if(x.category==="水果") u.searchParams.append("fruitQty",x.name+"::"+x.fruitQuantity);});
     Array.from(document.querySelectorAll(".cleaning:checked")).forEach(x=>u.searchParams.append("clean",x.value));
     if($("extraNote").value.trim()) u.searchParams.set("note",$("extraNote").value.trim());
     return u.toString();
@@ -632,6 +817,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   async function sharePlan() {
     const items=selectedItems();
     if(!items.length) { alert("请先勾选菜单"); return; }
+    if(!validateFruitQuantities(items)) return;
     saveCurrentDay(false);
     const url=buildShareURL();
     const text="我选好了菜单，请按这个链接继续生成采购和阿姨微信：";
@@ -652,6 +838,12 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     $("focus").value=p.get("focus")||"均衡安排";
     $("extraNote").value=p.get("note")||"";
     const names=new Set(dishes);
+    fruitQuantities = {};
+    p.getAll("fruitQty").forEach(v => {
+      const idx=v.indexOf("::");
+      if(idx>0) fruitQuantities[v.slice(0,idx)] = v.slice(idx+2);
+    });
+    if(names.has("西瓜")) fruitQuantities["西瓜"] = watermelonFixed;
     allChecks().forEach(x=>x.checked=names.has(x.value));
     const cleans=new Set(p.getAll("clean"));
     document.querySelectorAll(".cleaning").forEach(x=>x.checked=cleans.has(x.value));
@@ -694,11 +886,13 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     applyFilters();
   }));
   $("searchBox").addEventListener("input",applyFilters);
+  $("salaryAdjustBtn").addEventListener("click",adjustSalaryCount);
+  $("salaryPaidBtn").addEventListener("click",startNewSalaryCycle);
   $("menuDate").addEventListener("change",()=>{renderWeek();loadCurrentDay();});
   $("generateBtn").addEventListener("click",generateOutputs);
   $("saveBtn").addEventListener("click",()=>saveCurrentDay(true));
   $("shareBtn").addEventListener("click",sharePlan);
-  $("clearBtn").addEventListener("click",()=>{allChecks().forEach(x=>x.checked=false);updateAll();});
+  $("clearBtn").addEventListener("click",()=>{allChecks().forEach(x=>x.checked=false);fruitQuantities={};updateAll();});
   $("addDishBtn").addEventListener("click",addDish);
   $("favoriteBtn").addEventListener("click",()=>feedback("favorite"));
   $("normalBtn").addEventListener("click",()=>feedback("normal"));
@@ -707,6 +901,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   document.querySelectorAll("[data-copy]").forEach(btn=>btn.addEventListener("click",()=>copyText(btn.dataset.copy)));
 
   renderWeek();
+  renderSalary();
   if(!restoreFromURL()) loadCurrentDay();
   updateSelectedList();
   applyFilters();

@@ -1,0 +1,49 @@
+家庭菜单网站 Final V3｜改成仅自己可访问
+
+一、为什么不能只把 GitHub 仓库改成 Private
+普通 GitHub Pages 仍可能公开访问；真正私密发布通常需要 GitHub Enterprise Cloud 的私有 Pages。
+因此建议：GitHub 仓库保留作代码存储，网站改由 Cloudflare Pages 发布，并用 Cloudflare Access 只允许你自己的邮箱登录。
+
+二、你需要做的操作
+
+A. 先更新网页文件
+1. 打开 GitHub 仓库 haina07/family-menu
+2. Add file → Upload files
+3. 上传新版 index.html，覆盖旧文件
+4. Commit changes
+
+B. 部署到 Cloudflare Pages
+1. 注册并登录 Cloudflare
+2. 进入 Workers & Pages
+3. Create application → Pages → Connect to Git / Import an existing Git repository
+4. 连接 GitHub，选择 haina07/family-menu
+5. Production branch：main
+6. Build command：exit 0
+7. Build output directory：.
+8. Save and Deploy
+9. 部署完成后会得到类似 https://family-menu-xxx.pages.dev 的网址
+
+C. 只允许你自己访问
+1. Cloudflare → Workers & Pages → 进入该项目
+2. Settings → General → Enable access policy
+3. 进入 Zero Trust / Access controls / Applications，打开该项目的 Access 应用
+4. Public hostname 中删除 Subdomain 前面的通配符 *，保存，以保护正式 pages.dev 地址
+5. 新建 Allow policy
+6. Include 选择 Emails，填写你自己的邮箱
+7. 登录方式可选 One-time PIN；以后手机或电脑打开网页时，邮箱会收到一次性验证码
+
+D. 关闭原来公开的 GitHub Pages
+1. GitHub 仓库 → Settings → Pages
+2. 在 “Your site is live at” 右侧菜单选择 Unpublish site
+3. 确认 Cloudflare 私密网址正常后，可把 GitHub 仓库改为 Private
+
+注意
+- 网页中的菜单记录、菜品反馈、工资天数目前保存在浏览器本地。
+- 手机和电脑会各自保存一份，不会自动同步。建议日常固定使用手机保存菜单。
+
+
+Final V3水果规则：
+- 桃等普通水果没有默认数量，选中后必须选择数量。
+- 葡萄、蓝莓、草莓等提供“份/盒”等选项。
+- 西瓜固定为：1个（一半切片我和娃吃，一半冷藏爸爸吃）。
+- 数量会进入本周记录、采购清单、阿姨微信和分享菜单链接。
