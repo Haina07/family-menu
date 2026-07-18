@@ -1,0 +1,21 @@
+家庭菜单管理中心 Final V5｜GitHub 更新方法
+
+一、上传更新
+1. 打开：https://github.com/haina07/family-menu
+2. 登录 GitHub（如尚未登录）：https://github.com/login
+3. 在仓库文件列表上方点击 Add file
+4. 点击 Upload files
+5. 上传新版 index.html，覆盖原文件
+6. 点击 Commit changes
+7. 等待约1-10分钟
+8. 打开：https://haina07.github.io/family-menu/?v=final5
+
+二、Cloudflare
+控制台：https://dash.cloudflare.com/
+
+三、本版更新
+- 新增菜品不再单独放在“我新增的菜”，会自动进入对应大分类下的“新菜”列表。
+- 正式增加：煮玉米（主食）、肉馅酿豆腐（猪肉菜）、红烧冬瓜（素菜）。
+- 厨房打扫增加：洗碗机表面、锅表面、放洗碗布的白色架子。
+- 新增“刷拖鞋”家务口令。
+- 阿姨工资天数更新为截至2026-07-18已做工8天，达到22天自动提醒结工资。

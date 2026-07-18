@@ -48,7 +48,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>家庭菜单管理中心</h1><div class="sub">Final V3｜水果数量选择、22天工资结算、完整菜单、本周去重、采购和阿姨微信</div></div></header>
+<header><div class="wrap"><h1>家庭菜单管理中心</h1><div class="sub">Final V5｜新增菜自动归类、家务口令、工资8/22天</div></div></header>
 
 <div class="wrap layout">
 <aside class="sidebar">
@@ -64,7 +64,8 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     <div style="margin-top:10px">
       <label><input type="checkbox" class="cleaning" value="擦灰"> 擦灰</label><br>
       <label><input type="checkbox" class="cleaning" value="擦沙发"> 擦沙发</label><br>
-      <label><input type="checkbox" class="cleaning" value="厨房打扫"> 厨房打扫</label>
+      <label><input type="checkbox" class="cleaning" value="厨房打扫"> 厨房打扫</label><br>
+      <label><input type="checkbox" class="cleaning" value="刷拖鞋"> 刷拖鞋</label>
     </div>
   </div>
 
@@ -85,8 +86,8 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     <h2 style="margin-top:0">阿姨工资结算</h2>
     <div class="salary-box">
       <div class="salary-head">
-        <div class="salary-count"><span id="salaryCount">5</span><small> / 22天</small></div>
-        <div class="sub" id="salaryRemaining">还差17天</div>
+        <div class="salary-count"><span id="salaryCount">8</span><small> / 22天</small></div>
+        <div class="sub" id="salaryRemaining">还差14天</div>
       </div>
       <div class="salary-progress"><span id="salaryProgress"></span></div>
       <div class="salary-message">每保存一个新的菜单日期，计为1个做工日。同一日期重复保存不会重复计数。</div>
@@ -151,6 +152,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 <details class="group" open><summary>猪肉｜肉丝、肉片、肉末类 <span class="count">13</span></summary><div class="dish-grid">
 <label class="dish-card" data-name="木须肉" data-dish="木须肉"><input type="checkbox" class="dish-check" value="木须肉" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="黄瓜、鸡蛋、里脊肉、胡萝卜" data-ingredients="里脊肉|黄瓜|鸡蛋|胡萝卜|木耳"><span class="dish-name">木须肉 </span><small>黄瓜、鸡蛋、里脊肉、胡萝卜</small></label>
 <label class="dish-card" data-name="肉末豆腐" data-dish="肉末豆腐"><input type="checkbox" class="dish-check" value="肉末豆腐" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="猪肉末|豆腐|小葱"><span class="dish-name">肉末豆腐 <span class="tag kid">孩子喜欢</span></span></label>
+<label class="dish-card" data-name="肉馅酿豆腐" data-dish="肉馅酿豆腐"><input type="checkbox" class="dish-check" value="肉馅酿豆腐" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="不放辣椒，孩子可以吃" data-ingredients="猪肉馅|豆腐"><span class="dish-name">肉馅酿豆腐 <span class="tag kid">孩子可吃</span></span><small>不放辣椒，孩子可以吃</small></label>
 <label class="dish-card" data-name="蒜苔炒细肉丝" data-dish="蒜苔炒细肉丝"><input type="checkbox" class="dish-check" value="蒜苔炒细肉丝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="蒜苔|里脊肉"><span class="dish-name">蒜苔炒细肉丝 </span></label>
 <label class="dish-card" data-name="茭白炒肉丝" data-dish="茭白炒肉丝"><input type="checkbox" class="dish-check" value="茭白炒肉丝" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="茭白|里脊肉"><span class="dish-name">茭白炒肉丝 </span></label>
 <label class="dish-card" data-name="糖醋里脊" data-dish="糖醋里脊"><input type="checkbox" class="dish-check" value="糖醋里脊" data-category="荤菜" data-group="猪肉｜肉丝、肉片、肉末类" data-note="" data-ingredients="里脊肉|鸡蛋|淀粉"><span class="dish-name">糖醋里脊 </span></label>
@@ -254,6 +256,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 <label class="dish-card" data-name="茄子土豆西红柿" data-dish="茄子土豆西红柿"><input type="checkbox" class="dish-check" value="茄子土豆西红柿" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子|土豆|西红柿"><span class="dish-name">茄子土豆西红柿 </span></label>
 <label class="dish-card" data-name="蒜蓉茄子" data-dish="蒜蓉茄子"><input type="checkbox" class="dish-check" value="蒜蓉茄子" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">蒜蓉茄子 </span></label>
 <label class="dish-card" data-name="红烧茄子" data-dish="红烧茄子"><input type="checkbox" class="dish-check" value="红烧茄子" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="茄子"><span class="dish-name">红烧茄子 </span></label>
+<label class="dish-card" data-name="红烧冬瓜" data-dish="红烧冬瓜"><input type="checkbox" class="dish-check" value="红烧冬瓜" data-category="素菜" data-group="热菜｜瓜果、根茎及杂菜" data-note="" data-ingredients="冬瓜"><span class="dish-name">红烧冬瓜 </span></label>
 <label class="dish-card" data-name="尖椒土豆丝" data-dish="尖椒土豆丝"><input type="checkbox" class="dish-check" value="尖椒土豆丝" data-category="素菜" data-group="热菜｜茄子、土豆类" data-note="" data-ingredients="尖椒|土豆"><span class="dish-name">尖椒土豆丝 <span class="tag dad">爸爸喜欢</span><span class="tag spicy">辣菜</span></span></label>
 </div></details>
 <details class="group" open><summary>热菜｜菌菇类 <span class="count">5</span></summary><div class="dish-grid">
@@ -323,6 +326,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 <section class="menu-section" data-category="主食"><h2>主食</h2>
 <details class="group" open><summary>米饭、焖饭及炒饭 <span class="count">6</span></summary><div class="dish-grid">
 <label class="dish-card" data-name="米饭" data-dish="米饭"><input type="checkbox" class="dish-check" value="米饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="" data-ingredients="大米"><span class="dish-name">米饭 <span class="tag kid">孩子喜欢</span></span></label>
+<label class="dish-card" data-name="煮玉米" data-dish="煮玉米"><input type="checkbox" class="dish-check" value="煮玉米" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="" data-ingredients="玉米"><span class="dish-name">煮玉米 </span></label>
 <label class="dish-card" data-name="卤肉饭" data-dish="卤肉饭"><input type="checkbox" class="dish-check" value="卤肉饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="参考食谱，放2个鸡蛋、胡萝卜" data-ingredients=""><span class="dish-name">卤肉饭 </span><small>参考食谱，放2个鸡蛋、胡萝卜</small></label>
 <label class="dish-card" data-name="三文鱼焖饭" data-dish="三文鱼焖饭"><input type="checkbox" class="dish-check" value="三文鱼焖饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="黄油煎三文鱼；放胡萝卜丝、白蘑菇丝、洋葱、香菜和小葱" data-ingredients="三文鱼|胡萝卜|白蘑菇|洋葱|香菜|小葱|黄油|大米"><span class="dish-name">三文鱼焖饭 </span><small>黄油煎三文鱼；放胡萝卜丝、白蘑菇丝、洋葱、香菜和小葱</small></label>
 <label class="dish-card" data-name="鳕鱼炒饭" data-dish="鳕鱼炒饭"><input type="checkbox" class="dish-check" value="鳕鱼炒饭" data-category="主食" data-group="米饭、焖饭及炒饭" data-note="鳕鱼蒸熟切小块；鸡蛋先炒出；加胡萝卜丁、黄瓜丁、洋葱末、小葱" data-ingredients="鳕鱼|鸡蛋|胡萝卜|黄瓜|洋葱|小葱|大米"><span class="dish-name">鳕鱼炒饭 </span><small>鳕鱼蒸熟切小块；鸡蛋先炒出；加胡萝卜丁、黄瓜丁、洋葱末、小葱</small></label>
@@ -414,6 +418,22 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 </main>
 </div>
 
+
+<div class="wrap">
+  <div class="card">
+    <h2 style="margin-top:0">网站更新入口</h2>
+    <div class="actions">
+      <a href="https://github.com/haina07/family-menu" target="_blank" rel="noopener" style="text-decoration:none"><button class="primary" type="button">打开 GitHub 菜单仓库</button></a>
+      <a href="https://github.com/login" target="_blank" rel="noopener" style="text-decoration:none"><button class="secondary" type="button">GitHub 登录</button></a>
+      <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener" style="text-decoration:none"><button class="secondary" type="button">Cloudflare 控制台</button></a>
+    </div>
+    <div class="share-note">
+      更新网页：进入 GitHub 仓库 → Add file → Upload files → 上传新版 index.html 覆盖旧文件 → Commit changes。
+      GitHub Pages 通常会自动更新，最长可能需要约10分钟。
+    </div>
+  </div>
+</div>
+
 <div class="sticky-actions">
   <div class="wrap actions">
     <button class="primary" id="generateBtn">生成采购与微信</button>
@@ -428,7 +448,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
 "use strict";
 (function() {
   const $ = (id) => document.getElementById(id);
-  const builtInNames = ["红烧鸡翅", "红烧鸡爪", "炸鸡柳", "临沂炒鸡（村驴）", "可乐鸡翅", "黄焖鸡", "宫保鸡丁", "香菇滑鸡", "咖喱鸡", "鸡腿炖土豆", "鸡腿炖蘑菇", "白切鸡", "盐焗鸡", "糖醋排骨", "红烧排骨", "菠萝排骨", "话梅排骨", "豉汁排骨（村驴）", "豆角土豆炖排骨", "胡萝卜土豆炖排骨粉条", "梅酱猪排", "木须肉", "肉末豆腐", "蒜苔炒细肉丝", "茭白炒肉丝", "糖醋里脊", "锅包肉（村驴）", "回锅肉", "鱼香肉丝", "京酱肉丝", "肉末茄子", "肉末粉丝", "黄瓜拌猪肝", "拌猪肝", "四喜丸子", "珍珠丸子", "冬瓜丸子粉丝汤", "豆腐娃娃菜炖粉条（少量五花肉）", "扁豆五花肉焖面", "卤肉饭", "红烧肉", "梅菜扣肉", "蒜泥白肉", "胡萝卜炖牛肉", "西红柿炖牛尾骨", "土豆胡萝卜炖牛腩（村驴）", "清炖牛肋条", "牛肋条豆皮红薯粉", "卤牛腱子", "牛肉面", "葱烧肥牛饭", "番茄豆腐肥牛小白菜锅", "菠萝拌牛肉香菜", "黑椒牛柳", "洋葱炒牛肉", "金针菇肥牛", "三酱牛肉", "孜然羊肉", "葱爆羊肉", "羊肉葱花饼", "羊肉串", "羊肉汤", "羊骨白菜粉丝汤", "红烧桂鱼", "清蒸桂鱼", "噶鱼炖豆腐粉条", "红烧罗非鱼", "清蒸鳕鱼", "红烧鲈鱼", "清蒸鲈鱼", "黄花鱼", "多宝鱼", "芦笋白蘑菇炒虾仁", "番茄豆腐鲜虾煲", "宫保虾球（村驴）", "黄瓜鸡蛋炒虾仁", "丝瓜虾仁", "油焖大虾", "白灼虾", "丝瓜虾滑汤", "煎青椒虾滑胡萝卜", "冬笋炒腊肉", "芦笋炒腊肉", "苦瓜炒鸡蛋豆腐", "丝瓜炒鸡蛋", "西兰花西红柿炒鸡蛋", "胡萝卜洋葱炒鸡蛋", "西红柿炒鸡蛋", "黄瓜炒鸡蛋", "韭菜炒鸡蛋", "蒜黄炒鸡蛋", "青椒炒鸡蛋", "木耳胡萝卜炒鸡蛋", "白菜烧豆腐", "家常豆腐", "豆腐娃娃菜炖粉条（纯素版）", "蒜苔炒香干", "蒜苔炒豆干", "香菇豆腐", "包浆豆腐", "素生煎包馅", "风味茄子（村驴）", "地三鲜", "茄子土豆西红柿", "蒜蓉茄子", "红烧茄子", "尖椒土豆丝", "黄油煎口蘑", "蒜蓉黄油煎白蘑菇", "香菇青菜", "白蘑菇炒西兰花", "芦笋炒白蘑菇", "清炒西兰花", "清炒小白菜", "蒜蓉油麦菜", "清炒菠菜", "清炒生菜", "清炒芥蓝", "清炒空心菜", "芋艿小白菜", "白灼秋葵", "秋葵炒山药木耳", "清炒苦瓜", "清炒西葫芦", "蒸贝贝南瓜", "松仁玉米", "炸素丸子", "玉米青豆胡萝卜丁", "黄瓜花生米拌粉丝", "黄瓜丝拌粉丝花生米", "拍黄瓜", "黄瓜拌木耳", "糖拌西红柿", "凉拌藕片", "菠菜拌粉丝", "凉拌木耳", "凉拌腐竹", "凉拌三丝", "鸽子汤", "萝卜汤", "炖鸡汤（羊肚菌、虫草花）", "菠菜西红柿蛋花汤", "西红柿青菜山药疙瘩汤", "冬瓜丸子粉丝汤", "丝瓜虾滑汤", "丝瓜鱼丸汤", "牛尾汤", "清炖牛肋条汤", "羊骨白菜粉丝汤", "八宝粥", "小米粥", "白米粥", "南瓜小米粥", "山药小米粥", "米饭", "卤肉饭", "三文鱼焖饭", "鳕鱼炒饭", "芝士焗饭", "葱烧肥牛饭", "茄丁面", "炸酱面", "牛肉面", "番茄鸡蛋面", "扁豆五花肉焖面", "打卤面", "饺子-木耳/鸡蛋/胡萝卜/猪肉馅", "饺子-鸡蛋/胡萝卜/玉米/猪肉馅/木耳", "爆汁牛肉蒸饺（村驴）", "素生煎包", "馒头", "羊肉葱花饼", "花卷", "冷冻欧包", "苹果", "桃", "猕猴桃", "葡萄", "西瓜", "火龙果", "橙子", "枇杷", "香蕉", "蓝莓", "哈密瓜", "梨", "荔枝", "草莓", "樱桃", "冷冻烤肠", "包浆豆腐", "大油边", "羊肉串", "冷冻欧包"];
+  const builtInNames = ["红烧鸡翅", "红烧鸡爪", "炸鸡柳", "临沂炒鸡（村驴）", "可乐鸡翅", "黄焖鸡", "宫保鸡丁", "香菇滑鸡", "咖喱鸡", "鸡腿炖土豆", "鸡腿炖蘑菇", "白切鸡", "盐焗鸡", "糖醋排骨", "红烧排骨", "菠萝排骨", "话梅排骨", "豉汁排骨（村驴）", "豆角土豆炖排骨", "胡萝卜土豆炖排骨粉条", "梅酱猪排", "木须肉", "肉末豆腐", "肉馅酿豆腐", "蒜苔炒细肉丝", "茭白炒肉丝", "糖醋里脊", "锅包肉（村驴）", "回锅肉", "鱼香肉丝", "京酱肉丝", "肉末茄子", "肉末粉丝", "黄瓜拌猪肝", "拌猪肝", "四喜丸子", "珍珠丸子", "冬瓜丸子粉丝汤", "豆腐娃娃菜炖粉条（少量五花肉）", "扁豆五花肉焖面", "卤肉饭", "红烧肉", "梅菜扣肉", "蒜泥白肉", "胡萝卜炖牛肉", "西红柿炖牛尾骨", "土豆胡萝卜炖牛腩（村驴）", "清炖牛肋条", "牛肋条豆皮红薯粉", "卤牛腱子", "牛肉面", "葱烧肥牛饭", "番茄豆腐肥牛小白菜锅", "菠萝拌牛肉香菜", "黑椒牛柳", "洋葱炒牛肉", "金针菇肥牛", "三酱牛肉", "孜然羊肉", "葱爆羊肉", "羊肉葱花饼", "羊肉串", "羊肉汤", "羊骨白菜粉丝汤", "红烧桂鱼", "清蒸桂鱼", "噶鱼炖豆腐粉条", "红烧罗非鱼", "清蒸鳕鱼", "红烧鲈鱼", "清蒸鲈鱼", "黄花鱼", "多宝鱼", "芦笋白蘑菇炒虾仁", "番茄豆腐鲜虾煲", "宫保虾球（村驴）", "黄瓜鸡蛋炒虾仁", "丝瓜虾仁", "油焖大虾", "白灼虾", "丝瓜虾滑汤", "煎青椒虾滑胡萝卜", "冬笋炒腊肉", "芦笋炒腊肉", "苦瓜炒鸡蛋豆腐", "丝瓜炒鸡蛋", "西兰花西红柿炒鸡蛋", "胡萝卜洋葱炒鸡蛋", "西红柿炒鸡蛋", "黄瓜炒鸡蛋", "韭菜炒鸡蛋", "蒜黄炒鸡蛋", "青椒炒鸡蛋", "木耳胡萝卜炒鸡蛋", "白菜烧豆腐", "家常豆腐", "豆腐娃娃菜炖粉条（纯素版）", "蒜苔炒香干", "蒜苔炒豆干", "香菇豆腐", "包浆豆腐", "素生煎包馅", "风味茄子（村驴）", "地三鲜", "茄子土豆西红柿", "蒜蓉茄子", "红烧茄子", "红烧冬瓜", "尖椒土豆丝", "黄油煎口蘑", "蒜蓉黄油煎白蘑菇", "香菇青菜", "白蘑菇炒西兰花", "芦笋炒白蘑菇", "清炒西兰花", "清炒小白菜", "蒜蓉油麦菜", "清炒菠菜", "清炒生菜", "清炒芥蓝", "清炒空心菜", "芋艿小白菜", "白灼秋葵", "秋葵炒山药木耳", "清炒苦瓜", "清炒西葫芦", "蒸贝贝南瓜", "松仁玉米", "炸素丸子", "玉米青豆胡萝卜丁", "黄瓜花生米拌粉丝", "黄瓜丝拌粉丝花生米", "拍黄瓜", "黄瓜拌木耳", "糖拌西红柿", "凉拌藕片", "菠菜拌粉丝", "凉拌木耳", "凉拌腐竹", "凉拌三丝", "鸽子汤", "萝卜汤", "炖鸡汤（羊肚菌、虫草花）", "菠菜西红柿蛋花汤", "西红柿青菜山药疙瘩汤", "冬瓜丸子粉丝汤", "丝瓜虾滑汤", "丝瓜鱼丸汤", "牛尾汤", "清炖牛肋条汤", "羊骨白菜粉丝汤", "八宝粥", "小米粥", "白米粥", "南瓜小米粥", "山药小米粥", "米饭", "煮玉米", "卤肉饭", "三文鱼焖饭", "鳕鱼炒饭", "芝士焗饭", "葱烧肥牛饭", "茄丁面", "炸酱面", "牛肉面", "番茄鸡蛋面", "扁豆五花肉焖面", "打卤面", "饺子-木耳/鸡蛋/胡萝卜/猪肉馅", "饺子-鸡蛋/胡萝卜/玉米/猪肉馅/木耳", "爆汁牛肉蒸饺（村驴）", "素生煎包", "馒头", "羊肉葱花饼", "花卷", "冷冻欧包", "苹果", "桃", "猕猴桃", "葡萄", "西瓜", "火龙果", "橙子", "枇杷", "香蕉", "蓝莓", "哈密瓜", "梨", "荔枝", "草莓", "樱桃", "冷冻烤肠", "包浆豆腐", "大油边", "羊肉串", "冷冻欧包"];
   const kidFavs = new Set(["米饭", "肉末豆腐", "西红柿炒鸡蛋"]);
   const dadFavs = new Set(["临沂炒鸡（村驴）", "回锅肉", "孜然羊肉", "宫保鸡丁", "尖椒土豆丝", "葱爆羊肉", "鱼香肉丝"]);
   const momFavs = new Set(["卤牛腱子", "土豆胡萝卜炖牛腩（村驴）", "清炖牛肋条", "清炖牛肋条汤", "清蒸桂鱼", "清蒸鲈鱼", "清蒸鳕鱼", "炖鸡汤（羊肚菌、虫草花）", "牛尾汤", "牛肉面", "牛肋条豆皮红薯粉", "红烧桂鱼", "红烧鲈鱼", "胡萝卜炖牛肉", "萝卜汤", "西红柿炖牛尾骨", "西红柿青菜山药疙瘩汤", "鸽子汤"]);
@@ -453,13 +473,14 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     "草莓":["1盒","2盒","1份"],
     "樱桃":["1盒","2盒","1份"]
   };
-  const salaryInitial = {baseDate:"2026-07-14",baseCount:5,countedDates:[],alerted:false};
+  const salaryInitial = {baseDate:"2026-07-18",baseCount:8,countedDates:[],alerted:false,version:5};
   let fruitQuantities = {};
 
   const cleaningTexts = {
     "擦灰":"桌子擦擦灰，包括咖啡机，孩子写字台，台灯，化妆台，卧室的酒架子，梳妆台之类。",
     "擦沙发":"好好擦擦沙发，把沙发上的东西都拿下来，旧沙发套放脏衣篓。",
-    "厨房打扫":"筷子笼洗洗，把勺子铲子等都取出来，清洗筷子笼子和下面架子，再擦干净。"
+    "厨房打扫":"筷子笼洗洗，把勺子、铲子等都取出来，清洗筷子笼和下面的架子，再擦干净；擦一下洗碗机表面、锅的表面，以及放洗碗布的白色架子。",
+    "刷拖鞋":"放在卫生间的拖鞋，请阿姨刷一下，刷干净。"
   };
 
   let activeFilter = "全部";
@@ -468,6 +489,14 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     favorites: new Set(JSON.parse(localStorage.getItem("fm_favorites") || "[]")),
     deleted: new Set(JSON.parse(localStorage.getItem("fm_deleted") || "[]"))
   };
+
+  // V5迁移：这三道菜现在已成为正式菜单，移除旧版自定义重复项
+  const promotedBuiltIns = new Set(["煮玉米","肉馅酿豆腐","红烧冬瓜"]);
+  const migratedCustom = state.custom.filter(d => !promotedBuiltIns.has(d.name));
+  if (migratedCustom.length !== state.custom.length) {
+    state.custom = migratedCustom;
+    localStorage.setItem("fm_custom", JSON.stringify(state.custom));
+  }
 
   function todayLocal() {
     const d = new Date();
@@ -498,23 +527,67 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
       .filter(x=>x.category==="水果" && x.name!=="西瓜" && !String(x.fruitQuantity||"").trim())
       .map(x=>x.name);
     if (missing.length) {
-      if(showAlert) alert("请选择水果数量："+missing.join("、"));
+      if(showAlert) alert("请在“已选菜单”区域选择水果数量："+missing.join("、"));
       return false;
     }
     return true;
   }
 
   function renderCustom() {
-    const box = $("customDishes");
-    if (!state.custom.length) { box.style.display="none"; box.innerHTML=""; return; }
-    box.style.display="block";
-    box.innerHTML = `<h2 style="margin-top:0">我新增的菜</h2><div class="dish-grid">` +
-      state.custom.map((d,i) => `
-        <label class="dish-card custom-card ${state.deleted.has(d.name)?"deleted":""} ${state.favorites.has(d.name)?"favorite":""}" data-name="${escapeHtml(d.name.toLowerCase())}" data-dish="${escapeHtml(d.name)}">
-          <input type="checkbox" class="dish-check" value="${escapeHtml(d.name)}" data-category="${escapeHtml(d.category)}" data-group="自定义" data-note="" data-ingredients="${escapeHtml((d.ingredients||[]).join("|"))}">
-          <span class="dish-name">${state.favorites.has(d.name)?"⭐ ":""}${escapeHtml(d.name)} <span class="tag mom">自定义</span></span>
-        </label>`).join("") + `</div>`;
-    box.querySelectorAll(".dish-check").forEach(x => x.addEventListener("change", updateAll));
+    // 清理旧版单独显示的“我新增的菜”区域
+    const oldBox = $("customDishes");
+    if (oldBox) {
+      oldBox.style.display = "none";
+      oldBox.innerHTML = "";
+    }
+
+    // 移除之前渲染过的各分类“新菜”分组
+    document.querySelectorAll(".custom-category-group").forEach(x=>x.remove());
+
+    const grouped = {};
+    state.custom.forEach(d => {
+      if (builtInNames.includes(d.name)) return;
+      grouped[d.category] = grouped[d.category] || [];
+      grouped[d.category].push(d);
+    });
+
+    Object.entries(grouped).forEach(([category,dishes]) => {
+      let section = document.querySelector(`.menu-section[data-category="${CSS.escape(category)}"]`);
+      if (!section) {
+        section = document.createElement("section");
+        section.className = "menu-section";
+        section.dataset.category = category;
+        section.innerHTML = `<h2>${escapeHtml(category)}</h2>`;
+        $("staticMenu").appendChild(section);
+      }
+
+      const details = document.createElement("details");
+      details.className = "group custom-category-group";
+      details.open = true;
+      details.innerHTML = `<summary>新菜 <span class="count">${dishes.length}</span></summary><div class="dish-grid"></div>`;
+      const grid = details.querySelector(".dish-grid");
+
+      dishes.forEach(d => {
+        const label = document.createElement("label");
+        label.className = `dish-card custom-card ${state.deleted.has(d.name)?"deleted":""} ${state.favorites.has(d.name)?"favorite":""}`;
+        label.dataset.name = d.name.toLowerCase();
+        label.dataset.dish = d.name;
+        label.innerHTML = `
+          <input type="checkbox" class="dish-check" value="${escapeHtml(d.name)}"
+            data-category="${escapeHtml(d.category)}" data-group="新菜"
+            data-note="" data-ingredients="${escapeHtml((d.ingredients||[]).join("|"))}">
+          <span class="dish-name">${state.favorites.has(d.name)?"⭐ ":""}${escapeHtml(d.name)}
+            <span class="tag mom">新菜</span>
+          </span>`;
+        grid.appendChild(label);
+      });
+
+      section.appendChild(details);
+    });
+
+    document.querySelectorAll(".custom-category-group .dish-check").forEach(x =>
+      x.addEventListener("change",()=>{ updateAll(); updateSelectedList(); })
+    );
   }
 
   function escapeHtml(v) {
@@ -546,9 +619,18 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     let s = JSON.parse(localStorage.getItem("fm_salary") || "null");
     if (!s) {
       s = {...salaryInitial};
-      localStorage.setItem("fm_salary", JSON.stringify(s));
     }
+
+    // V5迁移：截至2026-07-18本周期已做工8天。
+    // 仅迁移旧版尚未结算的5天初始数据，不影响以后手动开启的新周期。
+    if (!s.version && s.baseDate === "2026-07-14" && Number(s.baseCount || 0) <= 5) {
+      const oldDates = Array.from(new Set(s.countedDates || []));
+      const laterDates = oldDates.filter(d => d > "2026-07-18");
+      s = {baseDate:"2026-07-18",baseCount:8,countedDates:laterDates,alerted:false,version:5};
+    }
+    s.version = s.version || 5;
     s.countedDates = Array.from(new Set(s.countedDates || []));
+    localStorage.setItem("fm_salary", JSON.stringify(s));
     return s;
   }
 
@@ -596,14 +678,14 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
       alert("请输入0到22之间的整数");
       return;
     }
-    const s = {baseDate:todayLocal(),baseCount:n,countedDates:[],alerted:n>=22};
+    const s = {baseDate:todayLocal(),baseCount:n,countedDates:[],alerted:n>=22,version:5};
     saveSalaryState(s);
     renderSalary();
   }
 
   function startNewSalaryCycle() {
     if (!confirm("确认已经给阿姨结清工资，并从0天开始新周期？")) return;
-    const s = {baseDate:$("menuDate").value || todayLocal(),baseCount:0,countedDates:[],alerted:false};
+    const s = {baseDate:$("menuDate").value || todayLocal(),baseCount:0,countedDates:[],alerted:false,version:5};
     saveSalaryState(s);
     renderSalary();
     alert("新的22天结算周期已开始");
@@ -639,6 +721,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   }
 
   function updateSelectedList() {
+    updateSelectedList();
     const items = selectedItems();
     $("selectedList").innerHTML = items.length ? items.map(x => {
       if (x.category !== "水果") return `<li>${escapeHtml(x.name)}</li>`;
@@ -755,6 +838,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   }
 
   function generateOutputs() {
+    updateSelectedList();
     const items = selectedItems();
     if(!items.length) { alert("请先勾选菜单"); return; }
     if(!validateFruitQuantities(items)) return;
@@ -862,7 +946,7 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
     localStorage.setItem("fm_custom",JSON.stringify(state.custom));
     $("newDishName").value=""; $("newDishIngredients").value="";
     renderCustom(); applyDishFlags(); updateAll(); applyFilters();
-    alert("新菜已加入");
+    alert(`新菜已加入“${category} → 新菜”列表`);
   }
 
   function feedback(action) {
@@ -879,7 +963,10 @@ textarea{min-height:170px;resize:vertical} button{border:0;border-radius:10px;pa
   // Init
   $("menuDate").value=todayLocal();
   renderCustom(); applyDishFlags();
-  allChecks().forEach(x=>x.addEventListener("change",updateAll));
+  allChecks().forEach(x=>x.addEventListener("change",()=>{
+          updateAll();
+          updateSelectedList();
+        }));
   document.querySelectorAll(".filterbtn").forEach(btn=>btn.addEventListener("click",()=>{
     activeFilter=btn.dataset.filter;
     document.querySelectorAll(".filterbtn").forEach(x=>x.classList.toggle("active",x===btn));
